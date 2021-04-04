@@ -42,8 +42,12 @@ boolean PCA995xAPWM::begin() {
 }
 
 void PCA995xAPWM::reset(void) {
+  PCA995xAPWM::reset(_i2cPort);
+}
+
+static void PCA995xAPWM::reset(TwoWire *i2cPort) {
   uint8_t va[] = {0x06};
-  write(ADR_RESET, _i2cPort, va, sizeof(va));
+  write(ADR_RESET, i2cPort, va, sizeof(va));
 }
 
 void PCA995xAPWM::current(uint8_t port, float v) {

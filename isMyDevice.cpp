@@ -26,11 +26,16 @@
 */
 
 #include "PCA962xPWM.h"
+#include "PCA9685PWM.h"
 #include "PCA995xAPWM.h"
 #include "PCA9xxxPWM.h"
 
 static boolean PCA9xxxPWM::isMyDevice(uint8_t i2cAddr, TwoWire *wirePort) {
   // If you add a subclass of me, call isMyDevice() of that class
+  if (PCA9685PWM::isMyDevice(i2cAddr, wirePort)) {
+    return true;
+  }
+
   if (PCA962xPWM::isMyDevice(i2cAddr, wirePort)) {
     return true;
   }
@@ -40,4 +45,10 @@ static boolean PCA9xxxPWM::isMyDevice(uint8_t i2cAddr, TwoWire *wirePort) {
   }
 
   return false;
+}
+
+static void PCA9xxxPWM::reset(TwoWire *i2cPort) {
+  PCA962xPWM::reset(i2cPort);
+  PCA9685PWM::reset(i2cPort);
+  PCA995xAPWM::reset(i2cPort);
 }

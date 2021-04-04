@@ -42,12 +42,16 @@ void setup() {
   delay(100);
 
   if (pwm.begin() == false) {
-    Serial.println("Device does not appear to be connected. Please check "
-                   "wiring. Freezing...");
-    while (1)
-      ;
+    Serial.println("Fail. Attempt to reset");
+    pwm.reset();
+    if (pwm.begin() == false) {
+        Serial.println("Device does not appear to be connected. Please check "
+                       "wiring. Freezing...");
+        while (1)
+            ;
+    }
   }
-
+  
   Wire.setClock(400000);
   n_of_ports = pwm.number_of_ports();
 

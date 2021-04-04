@@ -49,11 +49,15 @@ void setup() {
     PCA9xxxPWM *pwm = pwms[i];
 
     if (pwm->begin() == false) {
-      Serial.print("Device ");
-      Serial.print(i);
-      Serial.println("does not appear to respond. Freezing...");
-      while (1)
-        ;
+        Serial.println("Fail. Attempt to reset");
+        pwm->reset();
+        if (pwm->begin() == false) {
+            Serial.print("Device ");
+            Serial.print(i);
+            Serial.println("does not appear to respond. Freezing...");
+            while (1)
+                ;
+        }
     }
     if (verbose) {
       Serial.print(i);

@@ -30,6 +30,7 @@
 #include "PCA9xxxPWM.h"
 
 #include "PCA9626PWM.h"
+#include "PCA9685PWM.h"
 #include "PCA9955APWM.h"
 
 PCA9xxxPWMFactory::PCA9xxxPWMFactory(TwoWire *i2cPort) : _i2cPort(i2cPort) {}
@@ -41,6 +42,10 @@ uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM **buf, uint8_t len,
   uint8_t iFound = 0;
 
   _i2cPort->begin();
+
+  // There may be substantial side effects to reset ALL devices.
+  PCA9xxxPWM::reset(_i2cPort);
+  
   for (uint8_t i = i2cAddrFrom; i <= i2cAddrTo; i++) {
     if (i > 0x7F) {
       break;
@@ -48,14 +53,21 @@ uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM **buf, uint8_t len,
     if (iFound == len) {
       break;
     }
-    if (PCA9xxxPWM::isMyDevice(i, _i2cPort)) {
-      // When you add a concrete class of PCA9xxxPWM, add here.
 
-      if (PCA9626PWM::isMyDevice(i, _i2cPort)) {
-        buf[iFound++] = new PCA9626PWM(i, _i2cPort);
-      } else if (PCA9955APWM::isMyDevice(i, _i2cPort)) {
-        buf[iFound++] = new PCA9955APWM(i, _i2cPort);
-      }
+    // When you add a concrete class of PCA9xxxPWM, add here.
+
+    if (PCA9685PWM::isMyDevice(i, _i2cPort)) {
+      buf[iFound++] = new PCA9685PWM(i, _i2cPort);
+      Serial.print("Find 9685 adr = ");
+      Serial.println(i, HEX);
+    } else if (PCA9626PWM::isMyDevice(i, _i2cPort)) {
+      buf[iFound++] = new PCA9626PWM(i, _i2cPort);
+      Serial.print("Find 962x adr = ");
+      Serial.println(i, HEX);
+    } else if (PCA9955APWM::isMyDevice(i, _i2cPort)) {
+      buf[iFound++] = new PCA9955APWM(i, _i2cPort);
+      Serial.print("Find 995x adr = ");
+      Serial.println(i, HEX);
     }
   }
   return iFound;

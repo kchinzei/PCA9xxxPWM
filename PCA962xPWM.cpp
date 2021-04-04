@@ -42,8 +42,12 @@ boolean PCA962xPWM::begin() {
 }
 
 void PCA962xPWM::reset(void) {
+  PCA962xPWM::reset(_i2cPort);
+}
+
+static void PCA962xPWM::reset(TwoWire *i2cPort) {
   uint8_t va[] = {0xA5, 0x5A};
-  write(ADR_RESET, _i2cPort, va, sizeof(va));
+  write(ADR_RESET, i2cPort, va, sizeof(va));
 }
 
 static boolean PCA962xPWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {

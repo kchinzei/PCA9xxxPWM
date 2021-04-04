@@ -43,10 +43,13 @@ void setup() {
   delay(100);
 
   if (pwm.begin() == false) {
-    Serial.println("Device does not appear to be connected. Please check "
-                   "wiring. Freezing...");
-    while (1)
-      ;
+    pwm.reset();
+    if (pwm.begin() == false) {
+      Serial.println("Device does not appear to be connected. Please check "
+                     "wiring. Freezing...");
+      while (1)
+        ;
+    }
   }
 
   Wire.setClock(400000);

@@ -25,16 +25,8 @@
   https://github.com/kchinzei/PCA9xxxPWM
 */
 
-#include <PCA9955APWM.h>
-#define DEFAULT_I2C_ADDR_995x 0x65 // At your preference (of your h/w setting)
-//PCA9955APWM pwm(DEFAULT_I2C_ADDR_995x);
-
-#include <PCA9626PWM.h>
-#define DEFAULT_I2C_ADDR_962x 0x40 // At your preference (of your h/w setting)
-// PCA9626PWM pwm(DEFAULT_I2C_ADDR_962x);
-
 #include <PCA9685PWM.h>
-#define DEFAULT_I2C_ADDR_9685 0x40 // At your preference (of your h/w setting)
+#define DEFAULT_I2C_ADDR_9685 0x42 // At your preference (of your h/w setting)
 PCA9685PWM pwm(DEFAULT_I2C_ADDR_9685);
 
 #include <Wire.h>
@@ -56,8 +48,15 @@ void setup() {
         ;
     }
   }
+  if (pwm.type_name() == "PCA9685") {
+    pwm.freq(1000);
+    pwm.invert_outputs(true);
+    pwm.totem_pole_outputs(false);
+    Serial.print("Frequency: ");
+    Serial.println(pwm.calc_freq(), 2);
+  }
 
-  Wire.setClock(400000);
+  // Wire.setClock(400000);
   n_of_ports = pwm.number_of_ports();
 
   verbose = true;
@@ -65,7 +64,61 @@ void setup() {
     Serial.print("Number of ports : ");
     Serial.print(n_of_ports);
     Serial.println("");
+
+    print_mode_register();
+    for (int j=0; j< n_of_ports; j++)
+      print_raw_led_register(j);
   }
+}
+
+void print_mode_register() {
+  uint8_t m1 = pwm.read(PCA9685PWM::MODE1);
+  uint8_t m2 = pwm.read(PCA9685PWM::MODE2);
+  Serial.print(" MODE1 Restart=");
+  Serial.print(m1&PCA9685PWM::MODE1_RESTART? 1:0);
+  Serial.print(" ExtClk=");
+  Serial.print(m1&PCA9685PWM::MODE1_EXTCLK? 1:0);
+  Serial.print(" AutoIncr=");
+  Serial.print(m1&PCA9685PWM::MODE1_AI? 1:0);
+  Serial.print(" Sleep=");
+  Serial.print(m1&PCA9685PWM::MODE1_SLEEP? 1:0);
+  Serial.print(" Sub1=");
+  Serial.print(m1&PCA9685PWM::MODE1_SUB1? 1:0);
+  Serial.print(" Sub2=");
+  Serial.print(m1&PCA9685PWM::MODE1_SUB2? 1:0);
+  Serial.print(" Sub3=");
+  Serial.print(m1&PCA9685PWM::MODE1_SUB3? 1:0);
+  Serial.print(" AllCall=");
+  Serial.println(m1&PCA9685PWM::MODE1_ALLCALL? 1:0);
+
+  Serial.print(" MODE2 Invrt=");
+  Serial.print(m2&PCA9685PWM::MODE2_INVRT? 1:0);
+  Serial.print(" OCH=");
+  Serial.print(m2&PCA9685PWM::MODE2_OCH? 1:0);
+  Serial.print(" OutDrv=");
+  Serial.print(m2&PCA9685PWM::MODE2_OUTDRV? "Totem":"Open-drain");
+  Serial.print(" OutNE=");
+  Serial.println(m2&0x03, BIN);
+}
+    
+void print_raw_led_register(uint8_t port) {
+  uint8_t reg = PCA9685PWM::LED_REGISTER_START + 4*port;
+  uint16_t on = pwm.read(reg++);
+  uint8_t hon = pwm.read(reg++);
+  on += (hon & 0x0F) << 8;
+  uint16_t off = pwm.read(reg++);
+  uint8_t hoff = pwm.read(reg);
+  off += (hoff & 0x0F) << 8;
+  Serial.print("Port [");
+  Serial.print(port);
+  Serial.print("] On= ");
+  Serial.print(on);
+  Serial.print(" Off= ");
+  Serial.print(off);
+  Serial.print(" Full On= ");
+  Serial.print(hon& 0x10, HEX);
+  Serial.print(" Full Off= ");
+  Serial.println(hoff& 0x10, HEX);
 }
 
 void test_one_by_one(int i) {

@@ -18,17 +18,20 @@ PCA995xA series are
 [PCA9956A](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/24-channel-fm-plus-ic-bus-57-ma-20-v-constant-current-led-driver:PCA9956BTW) (24ch).
 'B*' can be suffixed instead of 'A'. PCA995x (no suffix) are incompatible.
 
-You can find breakout boards from Switch Science,
+You can find breakout boards from [Switch Science](https://international.switch-science.com/),
 [PCA9622](https://international.switch-science.com/catalog/2388/),
 [PCA9955BTW](https://international.switch-science.com/catalog/2676/) etc.
+[PCA9685 breakout board](https://www.adafruit.com/product/815) is available from Adafruit.
 
-There are the official mbed libraries for these devices from NXP (ex: [PCA962x](https://os.mbed.com/users/nxp_ip/code/PCA962x/), [PCA995xA](https://os.mbed.com/users/nxp_ip/code/PCA995xA/)), but it seems none for Arduino. PCA9xxxPWM is here for you.
+There are NXP official mbed libraries for [PCA962x](https://os.mbed.com/users/nxp_ip/code/PCA962x/) and [PCA995xA](https://os.mbed.com/users/nxp_ip/code/PCA995xA/), but it seems none for Arduino.
+Adafruit published [PWM Servo Driver Library for PCA9685](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library) for Arduino.
+It is not compatible and applicable to PCA962x, 995xA due to substantial differences from PCA9685. PCA9xxxPWM is here for you.
 
 These devices have different features in number of outputs, allowable current / voltage, bit depth of PWM, current vs. voltage switch PWM, fading out control, etc. But all they control PWM ratio in common.
 
 ## Using PCA9xxxPWM
 
-Currently PCA9626 and PCA9955A are implemented and tested. Popular PCA9685 will be implemented soon.
+Currently PCA9626, PCA9685 and PCA9955A are implemented and tested.
 
 Copy `PCA9xxxPWM` folder into 'libraries' folder of Arduino, where Arduino IDE can search for files.
 You can find some examples in `examples` folder.
@@ -75,7 +78,7 @@ float vals[16] = {0.1, 0.2, ... 1};
 pwmdevice.pwm(vals);
 ```
 
-### Static Class Member functions
+### Static class member functions
 
 There are a few static class member functions so that you can examine I2C devices before instantiating one. Calling them will force the `TwoWire` object initialized by internally calling `begin()`, which should be no harm.
 
@@ -86,7 +89,7 @@ static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
 `isMyDevice()` is available for every concrete class under `PCA9xxxPWM`. They assume that the device is in the default state of each device. See each implementation to learn what is assumed.
 
-### Hardware dependent member functions
+### Hardware dependent member functions and behaviors
 
 You need to set current gain for PCA995xA devices. Note that there aren't equivalent member functions for other devices.
 
@@ -103,12 +106,45 @@ void exponential_adjustment(boolean exp_on);
 
 For other devices, it is implemented by software. They behave differently from PCA9955A when turning on/off during controlling PWM outputs.
 
+PCA9685 can change PWM frequency. `PCA9685PWM` has `set_freq()` for this purpose.
+It also accepts an external hardware clock. Other devices has fixed, internal oscillators only. To notify the software, provide `ext_clock`.
+
+```C++
+void freq(float freq, float ext_clock = 0.0);
+float calc_freq(float ext_clock = 0.0);
+```
+
+PCA9685 can switch its outputs between open drain and totem pole. Other devices are open drain outputs. PCA9685 can also invert its outputs.
+
+```C++
+void totem_pole_outputs(boolean totem_pole);
+void invert_outputs(boolean invert);
+```
+
+By default it is in **totem pole mode, not inverted** after initialization.
+PCA9xxx changes `PCA9685PWM` by calling `begin()` to open-drain, inverted so as it works same as other devices.
+
+### Functions that need some caution
+
+`reset()` broadcast a sequence of command to the I2C bus.
+
+```C++
+static void reset(TwoWire *i2cPort); // Class method
+void reset(void); // Object method
+```
+
+Indeed two versions of `reset()` does same; both broadcast. The object member one does also reset ALL devices of the same class.
+Even more, PCA995xA and PCA9685 have the same reset sequence. This means that resetting one will reset another.
+Due to these circumstances it is dependent to the system design how emitting `reset()` affects the system behavior.
+ - `scanDevices()` first uses `reset()` before starting the scan.
+ - After resetting you need to redo `begin()` as `reset()` does not call `init()` after reset.
+
 ## To Add More Devices
 
 You can add other device by deriving a concrete class from `PCA9xxxPWM` or its subclass. When doing this, you also need to
 
 - Provide your own `isMyDevice()` and call it from `PCA9xxxPWM::isMyDevice()` or subclass's `isMyDevice()`.
-- Modify `PCA9xxxPWMFactory::scanDevice()` to spawn your instance.
+- Modify `PCA9xxxPWMFactory::scanDevice()` to spawn this instance.
 
 # License
 

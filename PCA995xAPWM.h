@@ -98,8 +98,15 @@ public:
 
   boolean begin();
 
+  /** Broadcast reset sequence to the I2C bus.
+   *
+   * @param i2cPort Arduino Wire object (default: Wire)
+   * @note Sending this will reset all connected PCA995xA and
+   * other devices that understand the reset sequence.
+   */
+  static void reset(TwoWire *i2cPort);
   void reset(void);
-
+  
   /** Set the output current, specified as a percentage (float)
    *
    * @param port  Selecting output port

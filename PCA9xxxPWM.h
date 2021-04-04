@@ -82,10 +82,13 @@ public:
    */
   virtual String type_name(void) = 0;
 
-  /** Reset this device.
+  /** Broadcast reset sequences to the I2C bus.
    *
+   * @param i2cPort Arduino Wire object (default: Wire)
+   * @note Sending this will reset all connected devices that
+   * understand the reset sequences.
    */
-  virtual void reset(void) = 0;
+  static void reset(TwoWire *i2cPort = &Wire);
 
   /** Set the output PWM ratio, specified as a percentage (float).
    *
@@ -96,7 +99,7 @@ public:
    *    0.0f (representing on 0%) and 1.0f (representing on 100%).
    *    Values outside this range will have undefined behavior.
    */
-  void pwm(uint8_t port, float v);
+  virtual void pwm(uint8_t port, float v);
 
   /** Set all output port PWM ratio, specified as a percentage (array of float).
    *
@@ -107,7 +110,7 @@ public:
    *  @note
    *    The length of array should be at least number_of_ports().
    */
-  void pwm(float *vp);
+  virtual void pwm(float *vp);
 
   /** Number of PWM ports of this device.
    *
@@ -178,6 +181,7 @@ public:
   };
 
 protected:
+  virtual float simple_exp(float refIn);
   uint8_t _i2cAddr;
   TwoWire *_i2cPort;
   boolean use_exponential;
@@ -188,7 +192,6 @@ protected:
 private:
   virtual void init() = 0;
   virtual uint8_t pwm_register_access(uint8_t port) = 0;
-  virtual uint8_t simple_exp(uint8_t refIn);
 };
 
 #endif

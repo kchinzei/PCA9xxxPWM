@@ -64,18 +64,18 @@ void PCA9xxxPWM::exponential_adjustment(boolean exp_on) {
   It will be overridden in PCA9955APWM class because this
   device has its own function.
  */
-uint8_t PCA9xxxPWM::simple_exp(uint8_t refIn) {
-  uint8_t refOut = refIn;
+float PCA9xxxPWM::simple_exp(float refIn) {
+  float refOut = refIn;
 
   if (use_exponential) {
-    if (refIn < 64) {
-      refOut = 6.0 * refIn / 64 + 0.5;
-    } else if (refIn < 128) {
-      refOut = 12.0 * (refIn - 64) / 64 + 6.5;
-    } else if (refIn < 192) {
-      refOut = 56.0 * (refIn - 128) / 64 + 18.5;
-    } else if (refIn < 255) {
-      refOut = 181.0 * (refIn - 192) / 63 + 74.5;
+    if (0 < refIn && refIn < 64.0/255) {
+      refOut = 6.0/255 * refIn / 0.25;
+    } else if (refIn < 128.0/255) {
+      refOut = 12.0/255 * (refIn - 64.0/255) / 0.25 + 6.0/255;
+    } else if (refIn < 192.0/255) {
+      refOut = 56.0/255 * (refIn - 128.0/255) / 0.25 + 18.0/255;
+    } else if (refIn < 1) {
+      refOut = 181.0/255 * (refIn - 192.0/255) / 0.25 + 74.0/255;
     }
   }
   return refOut;
@@ -93,7 +93,7 @@ void PCA9xxxPWM::pwm(uint8_t port, float v) {
     }
     pwm(va);
   } else {
-    write(reg_addr, simple_exp(v * 255.0));
+    write(reg_addr, simple_exp(v)*255);
   }
 }
 
@@ -104,7 +104,7 @@ void PCA9xxxPWM::pwm(float *vp) {
   *data = pwm_register_access(0) | AUTO_INCREMENT;
 
   for (int i = 1; i <= n_of_ports; i++) {
-    data[i] = simple_exp(*vp++ * 255.0);
+    data[i] = simple_exp(*vp++)*255;
   }
   write(data, sizeof(data));
 }

@@ -61,7 +61,7 @@ void PCA9955APWM::exponential_adjustment(boolean exp_on) {
   write(MODE2, mode2);
 }
 
-uint8_t PCA9955APWM::simple_exp(uint8_t refIn) {
+float PCA9955APWM::simple_exp(float refIn) {
   // Serial.println("override simple_exp()");
   return refIn;
 }
