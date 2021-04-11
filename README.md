@@ -133,7 +133,7 @@ static void reset(TwoWire *i2cPort); // Class method
 void reset(void); // Object method
 ```
 
-Indeed two versions of `reset()` does same; both broadcast. The object member one does also reset ALL devices of the same class.
+Indeed two versions of `reset()` do same; both broadcast. The object member one does also reset ALL devices of the same class.
 Even more, PCA995xA and PCA9685 have the same reset sequence. This means that resetting one will reset another.
 Due to these circumstances it is dependent to the system design how emitting `reset()` affects the system behavior.
  - `scanDevices()` first uses `reset()` before starting the scan.
