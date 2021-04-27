@@ -40,7 +40,7 @@ void PCA9955APWM::init(void) {
       0xAA,
       0xAA,
       0xAA,
-      0xAA, //  LEDOUT[3:0]
+      0xAA, //  LEDOUT[3:0] to PWM mode
       0x80,
       0x00, //  GRPPWM, GRPFREQ
   };
@@ -80,6 +80,40 @@ uint8_t PCA9955APWM::current_register_access(uint8_t port) {
   } else {
     return IREFALL;
   }
+}
+
+uint8_t PCA9955APWM::errflag(uint8_t port) {
+  auto err_bit = [](uint8_t port, uint8_t err_byte) {
+    uint8_t shiftbits = (port % 4)*2;
+    return (err_byte >> shiftbits) & 0b11;
+  };
+  uint8_t n_of_ports = number_of_ports();
+  uint8_t ret = NO_ERROR;
+
+  // 1. Get error flags.
+  uint8_t mode2 = read(MODE2);
+
+  // 2. Open/Short circuit?
+  if (mode2 & MODE2_ERROR) {
+    if (port < n_of_ports) {
+      uint8_t reg_addr = ERR_REGISTER_START + port/4;
+      uint8_t err_byte = read(reg_addr);
+      ret = err_bit(port, err_byte);
+    } else if (port == ALLPORTS) {
+      ret = CIRCUIT_ERROR;
+    }
+
+    // Clear it. It may hide errors in other ports.
+    mode2 |= MODE2_CLRERR;
+    write(MODE2, mode2);
+  }
+
+  // 3. Over temperature?
+  if (mode2 & MODE2_OVERTEMP) {
+    ret |= OVERTEMP;
+  }
+
+  return ret;
 }
 
 uint8_t PCA9955APWM::number_of_ports(void) { return n_of_ports; }

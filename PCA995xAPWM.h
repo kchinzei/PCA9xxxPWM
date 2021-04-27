@@ -88,9 +88,17 @@ public:
   } LedPinName;
 #endif // DOXYGEN_ONLY
 
+  enum error_flags {
+    NO_ERROR = 0,
+    SHORT_CIRCUIT,
+    OPEN_CIRCUIT,
+    CIRCUIT_ERROR = SHORT_CIRCUIT | OPEN_CIRCUIT,
+    OVERTEMP = 0x10,
+  };
+
   /** Constructor of this class
    *
-   * @note This class a pure virtual class. To instatiate use PCA9955APMW class
+   * @note This class is a pure virtual class. To instatiate use PCA9955APMW class
    * etc.
    */
   PCA995xAPWM(uint8_t i2cAddr, TwoWire *i2cPort);
@@ -129,6 +137,17 @@ public:
    */
   void current(float *vP);
 
+  /** Get error status of a port
+   *
+   * @param port  Selecting output port
+   *    'ALLPORTS' can be used to get any error status in any port other than NO_ERROR.
+   * @returns ErrStatus. OVERTEMP and other error can occur same time.
+   * @note Calling errflag() clears open or short-circuit status flag (not fixing the defect).
+   *  This can hide errors of other ports.
+   * @note Error status is tested and the flag is set when pwm value is between 8/255 and 254/255.
+   */
+  virtual uint8_t errflag(uint8_t port) = 0;
+  
   virtual uint8_t number_of_ports(void) = 0;
   virtual String type_name(void) = 0;
 
@@ -137,14 +156,14 @@ public:
 protected:
   enum {
     AUTO_INCREMENT = 0x80,
-    PWMALL = 0xFF,
     ADR_RESET = 0x00,
     ADR_ALLCALL = 0x70,
     ADR_SUBADR_DEFAULT = 0x76,
   };
 
 private:
-  virtual uint8_t current_register_access(uint8_t port);
+  virtual uint8_t current_register_access(uint8_t port) = 0;
+
 };
 
 #endif

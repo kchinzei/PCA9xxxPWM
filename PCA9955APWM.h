@@ -131,20 +131,25 @@ public:
     IREFALL,               /**< IREFALL register    */
     EFLAG0,                /**< EFLAG0 register     */
     EFLAG1,                /**< EFLAG1 register     */
+    EFLAG2,                /**< EFLAG2 register     */
+    EFLAG3,                /**< EFLAG3 register     */
 
     REGISTER_START = MODE1,
     LEDOUT_REGISTER_START = LEDOUT0,
     PWM_REGISTER_START = PWM0,
     IREF_REGISTER_START = IREF0,
+    ERR_REGISTER_START = EFLAG0,
     GRAD_GROUP_OFFSET = RAMP_RATE_GRP1 - RAMP_RATE_GRP0
   };
-
+                   
   PCA9955APWM(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
   ~PCA9955APWM();
 
   String type_name(void);
 
   uint8_t number_of_ports(void);
+
+  uint8_t errflag(uint8_t port);
 
   /** Overrides the method in the base class, because this device has its own
    * h/w function.
@@ -154,6 +159,23 @@ public:
   void exponential_adjustment(boolean exp_on);
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
+
+  enum {
+    MODE1_AIF = 0x80,
+    MODE1_AI1 = 0x40,
+    MODE1_AI0 = 0x20,
+    MODE1_SLEEP = 0x10,
+    MODE1_SUB1 = 0x08,
+    MODE1_SUB2 = 0x04,
+    MODE1_SUB3 = 0x02,
+    MODE1_ALLCALL = 0x01,
+    MODE2_OVERTEMP = 0x80,
+    MODE2_ERROR = 0x40,
+    MODE2_DMBLNK = 0x20,
+    MODE2_CLRERR = 0x10,
+    MODE2_OCH = 0x08,
+    MODE2_EXP_EN = 0x04,
+  };
 
 private:
   void init(void);

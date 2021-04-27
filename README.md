@@ -98,6 +98,14 @@ void current(uint8_t port, float vp);
 void current(float *vP);
 ```
 
+PCA995xA devices can also detect open/short circuit of output ports and over temperature conditions.
+`errflag()` returns error conditions.
+Note that calling this function does clear the flag, however it does not solve the error. When open/short circuit happens you must turn off such ports for safety.
+
+```C++
+uint8_t errflag(uint8_t port);
+```
+
 PCA9955A has a feature to exponentially enhance the output so that the brightness change felt naturally. Use `exponential_adjustment()` to turn on/off it.
 
 ```C++

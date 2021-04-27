@@ -84,6 +84,7 @@ float PCA9xxxPWM::simple_exp(float refIn) {
 void PCA9xxxPWM::pwm(uint8_t port, float v) {
   uint8_t reg_addr = pwm_register_access(port);
 
+  v = simple_exp(v);
   if (ALLPORTS == reg_addr) {
     uint8_t np = number_of_ports();
     float va[np];
@@ -93,7 +94,7 @@ void PCA9xxxPWM::pwm(uint8_t port, float v) {
     }
     pwm(va);
   } else {
-    write(reg_addr, simple_exp(v)*255);
+    write(reg_addr, v*255);
   }
 }
 
