@@ -203,7 +203,8 @@ void PCA9685PWM::reset(void) {
   PCA9685PWM::reset(_i2cPort);
 }
 
-static void PCA9685PWM::reset(TwoWire *i2cPort) {
+// static
+void PCA9685PWM::reset(TwoWire *i2cPort) {
   uint8_t va[] = {0x06};
   write(ADR_RESET, i2cPort, va, sizeof(va));
 }
@@ -220,7 +221,8 @@ uint8_t PCA9685PWM::number_of_ports(void) { return n_of_ports; }
 
 String PCA9685PWM::type_name(void) { return "PCA9685"; }
 
-static boolean PCA9685PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
+// static
+boolean PCA9685PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   if ((i2cAddr << 1) == PCA9685PWM::ADR_ALLCALL) {
     return false;
   }

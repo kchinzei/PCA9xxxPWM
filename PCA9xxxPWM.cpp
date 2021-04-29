@@ -46,7 +46,8 @@ boolean PCA9xxxPWM::isConnected() {
   return PCA9xxxPWM::isConnected(_i2cAddr, _i2cPort);
 }
 
-static boolean PCA9xxxPWM::isConnected(uint8_t i2cAddr, TwoWire *i2cPort) {
+// static
+boolean PCA9xxxPWM::isConnected(uint8_t i2cAddr, TwoWire *i2cPort) {
   i2cPort->begin();
   i2cPort->beginTransmission(i2cAddr);
   return (i2cPort->endTransmission() == 0);
@@ -119,7 +120,8 @@ boolean PCA9xxxPWM::write(uint8_t *val, uint8_t len) {
   return PCA9xxxPWM::write(_i2cAddr, _i2cPort, val, len);
 }
 
-static boolean PCA9xxxPWM::write(uint8_t addr, TwoWire *i2cPort, uint8_t *val,
+// static
+boolean PCA9xxxPWM::write(uint8_t addr, TwoWire *i2cPort, uint8_t *val,
                                  uint8_t len) {
   i2cPort->beginTransmission(addr);
   i2cPort->write(val, len);
@@ -130,7 +132,8 @@ uint8_t PCA9xxxPWM::read(uint8_t reg_addr) {
   return PCA9xxxPWM::read(_i2cAddr, _i2cPort, reg_addr);
 }
 
-static uint8_t PCA9xxxPWM::read(uint8_t i2c_addr, TwoWire *i2cPort,
+// static
+uint8_t PCA9xxxPWM::read(uint8_t i2c_addr, TwoWire *i2cPort,
                                 uint8_t reg_addr) {
   i2cPort->beginTransmission(i2c_addr);
   i2cPort->write(reg_addr);

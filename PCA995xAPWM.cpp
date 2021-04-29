@@ -45,7 +45,8 @@ void PCA995xAPWM::reset(void) {
   PCA995xAPWM::reset(_i2cPort);
 }
 
-static void PCA995xAPWM::reset(TwoWire *i2cPort) {
+// static
+void PCA995xAPWM::reset(TwoWire *i2cPort) {
   uint8_t va[] = {0x06};
   write(ADR_RESET, i2cPort, va, sizeof(va));
 }
@@ -67,7 +68,8 @@ void PCA995xAPWM::current(float *vp) {
   write(data, sizeof(data));
 }
 
-static boolean PCA995xAPWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
+// static
+boolean PCA995xAPWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   if (i2cAddr == ADR_ALLCALL || i2cAddr == ADR_SUBADR_DEFAULT)
     return false;
   // PCA995x devices commonly return 0b10001001 for MODE1, 0b00000*01 for MODE 2
