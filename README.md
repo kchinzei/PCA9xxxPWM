@@ -100,7 +100,7 @@ void current(float *vP);
 
 PCA995xA devices can also detect open/short circuit of output ports and over temperature conditions.
 `errflag()` returns error conditions.
-Note that calling this function does clear the flag, however it does not solve the error. When open/short circuit happens you must turn off such ports for safety.
+Note that calling this function clears the flag, however it does not solve the error. When open/short circuit happens you must turn off such ports for safety.
 
 ```C++
 uint8_t errflag(uint8_t port);
@@ -141,7 +141,7 @@ static void reset(TwoWire *i2cPort); // Class method
 void reset(void); // Object method
 ```
 
-Indeed two versions of `reset()` do same; both broadcast. The object member one does also reset ALL devices of the same class.
+Indeed these two `reset()` do same; both broadcast. The object method version does also broadcast to reset ALL devices of the same class.
 Even more, PCA995xA and PCA9685 have the same reset sequence. This means that resetting one will reset another.
 Due to these circumstances it is dependent to the system design how emitting `reset()` affects the system behavior.
  - `scanDevices()` first uses `reset()` before starting the scan.
