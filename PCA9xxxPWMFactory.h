@@ -29,8 +29,8 @@
 #ifndef _PCA9XXX_PWM_FACTORY_H_
 #define _PCA9XXX_PWM_FACTORY_H_
 
-#include "Arduino.h"
-#include "Wire.h"
+#include <Arduino.h>
+#include <Wire.h>
 
 #include "PCA9xxxPWM.h"
 

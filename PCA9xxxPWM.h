@@ -28,8 +28,8 @@
 #ifndef _PCA9XXX_PWM_H_
 #define _PCA9XXX_PWM_H_
 
-#include "Arduino.h"
-#include "Wire.h"
+#include <Arduino.h>
+#include <Wire.h>
 
 #define ALLPORTS 0xFF
 
