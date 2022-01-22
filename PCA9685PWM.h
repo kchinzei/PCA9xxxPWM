@@ -141,6 +141,9 @@ public:
 
   boolean begin();
 
+  boolean hasBegun();
+  void customHasBegun();
+
   void pwm(uint8_t port, float v);
   void pwm(float *vp);
 

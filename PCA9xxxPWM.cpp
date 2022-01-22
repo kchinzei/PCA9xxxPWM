@@ -35,6 +35,8 @@ PCA9xxxPWM::~PCA9xxxPWM() {}
 boolean PCA9xxxPWM::begin() {
   _i2cPort->begin();
   init(); // in the concrete class.
+  customHasBegun(); // in the concrete class.
+
   return true;
 }
 

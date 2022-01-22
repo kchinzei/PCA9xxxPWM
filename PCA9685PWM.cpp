@@ -110,6 +110,21 @@ void PCA9685PWM::init(void) {
   write(init_array1, sizeof(init_array1));
 }
 
+#define CUSTOM_SUBADR3_VAL 0xED /* Default is 0xE8 */
+#define SUBADR_MASK 0xFE /* bit 0 is reserved so we assume it can be changed */
+
+boolean PCA9685PWM::hasBegun() {
+    return isConnected() && ((read(PCA9685PWM::SUBADR3) & SUBADR_MASK) == (CUSTOM_SUBADR3_VAL & SUBADR_MASK));
+}
+
+void PCA9685PWM::customHasBegun() {
+  uint8_t adr_array[] = {
+      PCA9685PWM::SUBADR3,
+      CUSTOM_SUBADR3_VAL & SUBADR_MASK
+  };
+  write(adr_array, sizeof(adr_array));
+}
+
 void PCA9685PWM::pwm(uint8_t port, float v) {
   uint8_t val[5] = {pwm_register_access(port), 0,0,0,0};
   uint16_t dutyCycle = simple_exp(v) * STEPS;

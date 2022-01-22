@@ -32,7 +32,7 @@ PCA9955APWM::PCA9955APWM(uint8_t i2cAddr, TwoWire *i2cPort)
 
 PCA9955APWM::~PCA9955APWM() {}
 
-void PCA9955APWM::init(void) {
+void PCA9955APWM::init() {
   uint8_t init_array[] = {
       PCA995xAPWM::AUTO_INCREMENT | REGISTER_START, //  Command
       0x00,
@@ -49,6 +49,21 @@ void PCA9955APWM::init(void) {
   pwm(ALLPORTS, 0.0);
   current(ALLPORTS, 1.0);
   // gradation_group_clear();
+}
+
+#define CUSTOM_SUBADR3_VAL 0xEE /* Default is 0xEC */
+#define SUBADR_MASK 0xFE /* bit 0 is reserved so we assume it can be changed */
+
+boolean PCA9955APWM::hasBegun() {
+    return isConnected() && ((read(PCA9955APWM::SUBADR3) & SUBADR_MASK) == (CUSTOM_SUBADR3_VAL & SUBADR_MASK));
+}
+
+void PCA9955APWM::customHasBegun() {
+  uint8_t adr_array[] = {
+      PCA9955APWM::SUBADR3,
+      CUSTOM_SUBADR3_VAL & SUBADR_MASK
+  };
+  write(adr_array, sizeof(adr_array));
 }
 
 void PCA9955APWM::exponential_adjustment(boolean exp_on) {
@@ -116,9 +131,9 @@ uint8_t PCA9955APWM::errflag(uint8_t port) {
   return ret;
 }
 
-uint8_t PCA9955APWM::number_of_ports(void) { return n_of_ports; }
+uint8_t PCA9955APWM::number_of_ports() { return n_of_ports; }
 
-String PCA9955APWM::type_name(void) { return "PCA9955A"; }
+String PCA9955APWM::type_name() { return "PCA9955A"; }
 
 // static
 boolean PCA9955APWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {

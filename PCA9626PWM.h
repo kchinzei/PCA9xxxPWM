@@ -103,6 +103,9 @@ public:
   PCA9626PWM(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
   virtual ~PCA9626PWM();
 
+  boolean hasBegun();
+  void customHasBegun();
+
   String type_name(void);
 
   uint8_t number_of_ports(void);

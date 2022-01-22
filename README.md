@@ -89,6 +89,18 @@ static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
 `isMyDevice()` is available for every concrete class under `PCA9xxxPWM`. They assume that the device is in the default state of each device. See each implementation to learn what is assumed.
 
+### Response to device connection / removal
+
+You may want hot swap of I2C connection.
+You can watch if the device is not initialized by `begin()` by periodically calling `hasBegun()`.
+Code snippet is found in `examples/7_hasBegun`.
+
+`hasBegun()` modifies and watches `SUBADR3`.
+If it goes back to the default, it means the device was not initialized yet.
+If you use `SUBADR3` and need to change it for your purpose,
+you need to implement your own `hasBegun()` and `customHasBegun()`
+by deriving from a concrete class of `PCA9xxxPWM`.
+
 ### Hardware dependent member functions and behaviors
 
 You need to set current gain for PCA995xA devices. Note that there aren't equivalent member functions for other devices.

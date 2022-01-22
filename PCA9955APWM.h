@@ -145,9 +145,12 @@ public:
   PCA9955APWM(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
   ~PCA9955APWM();
 
-  String type_name(void);
+  boolean hasBegun();
+  void customHasBegun();
 
-  uint8_t number_of_ports(void);
+  String type_name();
+
+  uint8_t number_of_ports();
 
   uint8_t errflag(uint8_t port);
 
@@ -178,7 +181,7 @@ public:
   };
 
 private:
-  void init(void);
+  void init();
   uint8_t pwm_register_access(uint8_t port);
   uint8_t current_register_access(uint8_t port);
   float simple_exp(float refIn);

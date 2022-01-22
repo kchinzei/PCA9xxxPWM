@@ -51,6 +51,21 @@ void PCA9626PWM::init(void) {
   write(init_array1, sizeof(init_array1));
 }
 
+#define CUSTOM_SUBADR3_VAL 0xEA /* Default is 0xE8 */
+#define SUBADR_MASK 0xFE /* bit 0 is reserved so we assume it can be changed */
+
+boolean PCA9626PWM::hasBegun() {
+    return isConnected() && ((read(PCA9626PWM::SUBADR3) & SUBADR_MASK) == (CUSTOM_SUBADR3_VAL & SUBADR_MASK));
+}
+
+void PCA9626PWM::customHasBegun() {
+  uint8_t adr_array[] = {
+      PCA9626PWM::SUBADR3,
+      CUSTOM_SUBADR3_VAL & SUBADR_MASK
+  };
+  write(adr_array, sizeof(adr_array));
+}
+
 uint8_t PCA9626PWM::pwm_register_access(uint8_t port) {
   if (port < n_of_ports)
     return PWM_REGISTER_START + port;

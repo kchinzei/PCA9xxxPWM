@@ -76,11 +76,24 @@ public:
    */
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
+  /** Examine this device has been initialized (began) by begin().
+   * It examines SUBADR3 if it is modified by customHasBegun().
+   * @returns True if began.
+   * @note    It returns false if device is not connected (lost).
+   */
+  virtual boolean hasBegun();
+
+  /** Customize for hasBegun(), called from begin().
+   * It modifies SUBADR3 from the reset state.
+   * @note Override this and hasBegun() when SUBADR3 is necessary to modify for your purpose.
+   */
+  virtual void customHasBegun();
+
   /** Obtain device type name of this device.
    *
    * @returns Type name such as "PCA9626".
    */
-  virtual String type_name(void) = 0;
+  virtual String type_name() = 0;
 
   /** Broadcast reset sequences to the I2C bus.
    *
@@ -115,25 +128,25 @@ public:
   /** Number of PWM ports of this device.
    *
    */
-  virtual uint8_t number_of_ports(void) = 0;
+  virtual uint8_t number_of_ports() = 0;
 
   /** Getter for _i2cAddr
    *
    * @returns I2C address currently assigned.
    */
-  uint8_t get_i2cAddr(void) { return _i2cAddr; };
+  uint8_t get_i2cAddr() { return _i2cAddr; };
 
   /** Getter for _i2cPort
    *
    * @returns I2C port currently assigned.
    */
-  TwoWire *get_i2cPort(void) { return _i2cPort; };
+  TwoWire *get_i2cPort() { return _i2cPort; };
 
   /** Getter for use_exponential
    *
    * @preturns use_exponential
    */
-  boolean get_use_exponential(void) { return use_exponential; };
+  boolean get_use_exponential() { return use_exponential; };
 
   /** Apply exponential scale between 0 - 255.
    * PCA9955A has h/w function.
