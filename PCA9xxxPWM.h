@@ -81,13 +81,13 @@ public:
    * @returns True if began.
    * @note    It returns false if device is not connected (lost).
    */
-  virtual boolean hasBegun();
+  virtual boolean hasBegun() = 0;
 
   /** Customize for hasBegun(), called from begin().
    * It modifies SUBADR3 from the reset state.
    * @note Override this and hasBegun() when SUBADR3 is necessary to modify for your purpose.
    */
-  virtual void customHasBegun();
+  virtual void customHasBegun() = 0;
 
   /** Obtain device type name of this device.
    *
