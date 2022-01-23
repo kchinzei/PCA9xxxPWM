@@ -133,7 +133,7 @@ uint8_t PCA9955APWM::errflag(uint8_t port) {
 
 uint8_t PCA9955APWM::number_of_ports() { return n_of_ports; }
 
-String PCA9955APWM::type_name() { return "PCA9955A"; }
+String PCA9955APWM::type_name() { return PCA9955APWM::class_type(); }
 
 // static
 boolean PCA9955APWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
@@ -146,8 +146,8 @@ boolean PCA9955APWM::_isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   // PCA9955A returns 0b11101100 for SUBADR1 - SUBADR3 by default
   uint8_t subadr1 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9955APWM::SUBADR1);
   uint8_t subadr2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9955APWM::SUBADR2);
-  uint8_t subadr3 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9955APWM::SUBADR3);
+  // uint8_t subadr3 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9955APWM::SUBADR3);
 
-  return subadr1 == 0b11101100 && subadr2 == 0b11101100 &&
-         subadr3 == 0b11101100;
+  return (subadr1 == 0b11101100) && (subadr2 == 0b11101100);
+      // (subadr3 == 0b11101100);
 }

@@ -78,18 +78,23 @@ boolean PCA995xAPWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   uint8_t mode2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9xxxPWM::MODE2);
 
   /*
-  Serial.print(" MODE1 = ");
-  Serial.print(mode1, BIN);
-  Serial.print(" MODE2 = ");
-  Serial.println(mode2, BIN);
+  if (mode2) {
+    Serial.print(" Adr = 0x");
+    Serial.print(i2cAddr, HEX);
+    Serial.print(" MODE1 = ");
+    Serial.print(mode1, BIN);
+    Serial.print(" MODE2 = ");
+    Serial.println(mode2, BIN);
+  }
   */
 
   // However, experiments reveal that
   // 1) MODE1 bit 7 (auto increment) can be 0,
   // 2) MODE1 bit 4 (sleep) can be 0,
   // 3) MODE1 bit 0 (allcall) can be 0,
+  // 4) MODE2 bit 6 (open circuit) can be 1.
   // 4) MODE2 bit 2 (exponential) can be 0.
   // return mode1 == 0b00001001 && (mode2 | 1 << 2) == 0b00000101;
   return (mode1 & 0b01110110) == 0b00000000 &&
-         (mode2 & 0b11111011) == 0b00000001;
+         (mode2 & 0b10111011) == 0b00000001;
 }

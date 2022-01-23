@@ -234,7 +234,7 @@ uint8_t PCA9685PWM::pwm_register_access(uint8_t port) {
 
 uint8_t PCA9685PWM::number_of_ports(void) { return n_of_ports; }
 
-String PCA9685PWM::type_name(void) { return "PCA9685"; }
+String PCA9685PWM::type_name(void) { return PCA9685PWM::class_type(); }
 
 // static
 boolean PCA9685PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
@@ -248,21 +248,24 @@ boolean PCA9685PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   uint8_t mode2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9685PWM::MODE2);
 
   /*
-  Serial.print("Address = 0x");
-  Serial.print(i2cAddr, HEX);
-  Serial.print(" MODE1 = 0b");
-  Serial.print(mode1, BIN);
-  Serial.print(" MODE2 = 0b");
-  Serial.println(mode2, BIN);
+  if (mode1 && mode2) {
+    Serial.print("Address = 0x");
+    Serial.print(i2cAddr, HEX);
+    Serial.print(" MODE1 = 0b");
+    Serial.print(mode1, BIN);
+    Serial.print(" MODE2 = 0b");
+    Serial.println(mode2, BIN);
+  }
   */
 
-  if (!((mode1 & 0b10001111) == 0b00000001 && (mode2) == 0b00000100)) {
+  if ( !((mode1 & 0b00001111) == 0b00000001 &&
+        ((mode2 & 0b11101011) == 0b00000000))) {
     return false;
   }
   
   uint8_t subadr1 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9685PWM::SUBADR1);
   uint8_t subadr2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9685PWM::SUBADR2);
-  uint8_t subadr3 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9685PWM::SUBADR3);
+  // uint8_t subadr3 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9685PWM::SUBADR3);
   uint8_t allcalladr = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9685PWM::ALLCALLADR);
 
   /*
@@ -280,6 +283,6 @@ boolean PCA9685PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
 
   return subadr1 == PCA9685PWM::ADR_SUB1 &&
          subadr2 == PCA9685PWM::ADR_SUB2 &&
-         subadr3 == PCA9685PWM::ADR_SUB3 &&
+/*       subadr3 == PCA9685PWM::ADR_SUB3 && */
          allcalladr == PCA9685PWM::ADR_ALLCALL;
 }

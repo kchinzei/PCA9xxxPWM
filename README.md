@@ -47,6 +47,7 @@ You instantiate a concrete class of Class `PCA9xxxPWM`, for example `PCA9626PWM`
 PCA9955APWM pwmdevice(0x65);
 ```
 Or you can use `PCA9xxxPWMFactory` class to scan I2C bus and spawn instances for connected PCA9xxx devices.
+You can also call it in the main loop to examine if a device is (un)pluged. See [Response to device connection / removal](#Response-to-device-connection-removal)
 
 ```C++
 #include "PCA9xxxPWMFactory.h"
@@ -94,6 +95,9 @@ static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 You may want hot swap of I2C connection.
 You can watch if the device is not initialized by `begin()` by periodically calling `hasBegun()`.
 Code snippet is found in `examples/7_hasBegun`.
+For the same purpose, you can safely call `PCA9xxxPWMFactory::scanDevice()` periodically in the main loop.
+Doing so correctly preserves the status of existing `PCA9xxxPWM` instances as far as the device associated to the instance is connected.
+Code snippet is found in `examples/8_factory_hotswap`.
 
 `hasBegun()` modifies and watches `SUBADR3`.
 If it goes back to the default, it means the device was not initialized yet.
