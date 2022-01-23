@@ -112,6 +112,8 @@ public:
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
+  static String class_type() { return "PCA9626"; };
+
 private:
   void init(void);
   uint8_t pwm_register_access(uint8_t port);

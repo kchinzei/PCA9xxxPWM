@@ -163,6 +163,8 @@ public:
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
+  static String class_type() { return "PCA9955A"; };
+
   enum {
     MODE1_AIF = 0x80,
     MODE1_AI1 = 0x40,

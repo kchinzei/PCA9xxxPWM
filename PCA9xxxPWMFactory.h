@@ -47,6 +47,8 @@ public:
    *
    * @param buf         Array to push pointers to devices.
    * @param len         Size of buf.
+   * @param reset       Reset before scan. This removes existing instances in buf and send reset signal.
+                        Default=false (no reset)
    * @param i2cAddrFrom Start of scan in 7 bit. Default=0x08
    * @param i2cAddrTo   End of scan in 7 bit. Default = 0x77
    * @returns           Number of devices returned in buf.
@@ -55,7 +57,8 @@ public:
    * @note I did not use vector as it's deviated from std::vector in Arduino.
    * @note For default I2C address range see https://www.i2c-bus.org/addressing/
    */
-  uint8_t scanDevice(PCA9xxxPWM **buf, uint8_t len, uint8_t i2cAddrFrom = 0x08,
+  uint8_t scanDevice(PCA9xxxPWM **buf, uint8_t len, bool reset = false,
+                     uint8_t i2cAddrFrom = 0x08,
                      uint8_t i2cAddrTo = 0x77);
 
 private:

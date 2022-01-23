@@ -75,7 +75,7 @@ uint8_t PCA9626PWM::pwm_register_access(uint8_t port) {
 
 uint8_t PCA9626PWM::number_of_ports(void) { return n_of_ports; }
 
-String PCA9626PWM::type_name(void) { return "PCA9626"; }
+String PCA9626PWM::type_name(void) { return PCA9626PWM::class_type(); }
 
 // static
 boolean PCA9626PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
@@ -88,8 +88,8 @@ boolean PCA9626PWM::_isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   // PCA9626 returns 0b11100010, 100, 1000 for SUBADR1 - SUBADR3 by default
   uint8_t subadr1 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9626PWM::SUBADR1);
   uint8_t subadr2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9626PWM::SUBADR2);
-  uint8_t subadr3 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9626PWM::SUBADR3);
+  // uint8_t subadr3 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9626PWM::SUBADR3);
 
-  return subadr1 == 0b11100010 && subadr2 == 0b11100100 &&
-         subadr3 == 0b11101000;
+  return subadr1 == 0b11100010 && subadr2 == 0b11100100;
+      // subadr3 == 0b11101000;
 }
