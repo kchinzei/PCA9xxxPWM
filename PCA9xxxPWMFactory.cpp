@@ -33,13 +33,13 @@
 #include "PCA9685PWM.h"
 #include "PCA9955APWM.h"
 
-static int8_t exists(const PCA9xxxPWM **buf, uint8_t len, uint8_t adr, const String classtype);
+static int8_t exists(PCA9xxxPWM** const buf, uint8_t len, uint8_t adr, const String classtype);
 
 PCA9xxxPWMFactory::PCA9xxxPWMFactory(TwoWire *i2cPort) : _i2cPort(i2cPort) {}
 
 PCA9xxxPWMFactory::~PCA9xxxPWMFactory() {}
 
-uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM **oldbuf, uint8_t len, bool reset,
+uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM** const oldbuf, uint8_t len, bool reset,
                                       uint8_t i2cAddrFrom, uint8_t i2cAddrTo) {
   PCA9xxxPWM *newbuf[len];
   uint8_t iFound = 0;
@@ -133,7 +133,7 @@ uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM **oldbuf, uint8_t len, bool res
   return iFound;
 }
 
-static int8_t exists(const PCA9xxxPWM **buf, uint8_t len, uint8_t adr, const String classtype) {
+static int8_t exists(PCA9xxxPWM** const buf, uint8_t len, uint8_t adr, const String classtype) {
   for (int i = 0; i < len; i++) {
     if (buf[i]) {
       if (buf[i]->get_i2cAddr() == adr && buf[i]->type_name() == classtype) {

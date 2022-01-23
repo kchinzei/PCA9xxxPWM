@@ -94,7 +94,7 @@ boolean PCA9685PWM::begin() {
   }
 }
 
-void PCA9685PWM::init(void) {
+void PCA9685PWM::init() {
   uint8_t init_array0[] = {
       PCA9685PWM::REGISTER_START, // Reg Addr
       PCA9685PWM::MODE1_AI |
@@ -214,7 +214,7 @@ void PCA9685PWM::invert_outputs(boolean invert) {
   write(PCA9685PWM::MODE2, mode2);
 }
 
-void PCA9685PWM::reset(void) {
+void PCA9685PWM::reset() {
   PCA9685PWM::reset(_i2cPort);
 }
 
@@ -232,9 +232,9 @@ uint8_t PCA9685PWM::pwm_register_access(uint8_t port) {
   }
 }
 
-uint8_t PCA9685PWM::number_of_ports(void) { return n_of_ports; }
+uint8_t PCA9685PWM::number_of_ports() const { return n_of_ports; }
 
-String PCA9685PWM::type_name(void) { return PCA9685PWM::class_type(); }
+String PCA9685PWM::type_name() const { return PCA9685PWM::class_type(); }
 
 // static
 boolean PCA9685PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {

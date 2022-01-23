@@ -76,7 +76,7 @@ void PCA9955APWM::exponential_adjustment(boolean exp_on) {
   write(MODE2, mode2);
 }
 
-float PCA9955APWM::simple_exp(float refIn) {
+float PCA9955APWM::simple_exp(float refIn) const {
   // Serial.println("override simple_exp()");
   return refIn;
 }
@@ -131,9 +131,9 @@ uint8_t PCA9955APWM::errflag(uint8_t port) {
   return ret;
 }
 
-uint8_t PCA9955APWM::number_of_ports() { return n_of_ports; }
+uint8_t PCA9955APWM::number_of_ports() const { return n_of_ports; }
 
-String PCA9955APWM::type_name() { return PCA9955APWM::class_type(); }
+String PCA9955APWM::type_name() const { return PCA9955APWM::class_type(); }
 
 // static
 boolean PCA9955APWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {

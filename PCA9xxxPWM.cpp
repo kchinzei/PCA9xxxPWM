@@ -40,7 +40,7 @@ boolean PCA9xxxPWM::begin() {
   return true;
 }
 
-boolean PCA9xxxPWM::isConnected() {
+boolean PCA9xxxPWM::isConnected() const {
   if (!_i2cPort) {
     return false; // You call it before begin().
   }
@@ -67,7 +67,7 @@ void PCA9xxxPWM::exponential_adjustment(boolean exp_on) {
   It will be overridden in PCA9955APWM class because this
   device has its own function.
  */
-float PCA9xxxPWM::simple_exp(float refIn) {
+float PCA9xxxPWM::simple_exp(float refIn) const {
   float refOut = refIn;
 
   if (use_exponential) {

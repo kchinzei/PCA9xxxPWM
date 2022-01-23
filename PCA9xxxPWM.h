@@ -56,7 +56,7 @@ public:
    * @returns True if responded.
    * @note    It doesn't examine if connected device belongs to this class.
    */
-  boolean isConnected();
+  boolean isConnected() const;
 
   /** Examine an I2C device connected at specified address.
    *
@@ -93,7 +93,7 @@ public:
    *
    * @returns Type name such as "PCA9626".
    */
-  virtual String type_name() = 0;
+  virtual String type_name() const = 0;
 
   /** Broadcast reset sequences to the I2C bus.
    *
@@ -128,25 +128,25 @@ public:
   /** Number of PWM ports of this device.
    *
    */
-  virtual uint8_t number_of_ports() = 0;
+  virtual uint8_t number_of_ports() const = 0;
 
   /** Getter for _i2cAddr
    *
    * @returns I2C address currently assigned.
    */
-  uint8_t get_i2cAddr() { return _i2cAddr; };
+  uint8_t get_i2cAddr() const { return _i2cAddr; };
 
   /** Getter for _i2cPort
    *
    * @returns I2C port currently assigned.
    */
-  TwoWire *get_i2cPort() { return _i2cPort; };
+  TwoWire *get_i2cPort() const { return _i2cPort; };
 
   /** Getter for use_exponential
    *
    * @preturns use_exponential
    */
-  boolean get_use_exponential() { return use_exponential; };
+  boolean get_use_exponential() const { return use_exponential; };
 
   /** Apply exponential scale between 0 - 255.
    * PCA9955A has h/w function.
@@ -194,7 +194,7 @@ public:
   };
 
 protected:
-  virtual float simple_exp(float refIn);
+  virtual float simple_exp(float refIn) const;
   uint8_t _i2cAddr;
   TwoWire *_i2cPort;
   boolean use_exponential;

@@ -148,9 +148,9 @@ public:
   boolean hasBegun();
   void customHasBegun();
 
-  String type_name();
+  String type_name() const;
 
-  uint8_t number_of_ports();
+  uint8_t number_of_ports() const;
 
   uint8_t errflag(uint8_t port);
 
@@ -186,7 +186,7 @@ private:
   void init();
   uint8_t pwm_register_access(uint8_t port);
   uint8_t current_register_access(uint8_t port);
-  float simple_exp(float refIn);
+  float simple_exp(float refIn) const;
   static boolean _isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
   const uint8_t n_of_ports;

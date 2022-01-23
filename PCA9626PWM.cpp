@@ -32,7 +32,7 @@ PCA9626PWM::PCA9626PWM(uint8_t i2cAddr, TwoWire *i2cPort)
 
 PCA9626PWM::~PCA9626PWM() {}
 
-void PCA9626PWM::init(void) {
+void PCA9626PWM::init() {
   uint8_t init_array0[] = {
       PCA962xPWM::AUTO_INCREMENT | REGISTER_START, //  Command
       0x01, 0x00,                                  //  MODE1, MODE2
@@ -73,9 +73,9 @@ uint8_t PCA9626PWM::pwm_register_access(uint8_t port) {
     return PWMALL;
 }
 
-uint8_t PCA9626PWM::number_of_ports(void) { return n_of_ports; }
+uint8_t PCA9626PWM::number_of_ports() const { return n_of_ports; }
 
-String PCA9626PWM::type_name(void) { return PCA9626PWM::class_type(); }
+String PCA9626PWM::type_name() const { return PCA9626PWM::class_type(); }
 
 // static
 boolean PCA9626PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {

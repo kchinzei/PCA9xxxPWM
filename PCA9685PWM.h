@@ -160,10 +160,10 @@ public:
    * other devices that understand the reset sequence.
    */
   static void reset(TwoWire *i2cPort);
-  void reset(void);
+  void reset();
 
-  uint8_t number_of_ports(void);
-  String type_name(void);
+  uint8_t number_of_ports() const;
+  String type_name() const;
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
@@ -191,7 +191,7 @@ public:
   };
 
 private:
-  void init(void);
+  void init();
   uint8_t pwm_register_access(uint8_t port);
 
   const uint8_t n_of_ports;

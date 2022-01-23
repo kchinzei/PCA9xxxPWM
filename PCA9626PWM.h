@@ -106,16 +106,16 @@ public:
   boolean hasBegun();
   void customHasBegun();
 
-  String type_name(void);
+  String type_name() const;
 
-  uint8_t number_of_ports(void);
+  uint8_t number_of_ports() const;
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
   static String class_type() { return "PCA9626"; };
 
 private:
-  void init(void);
+  void init();
   uint8_t pwm_register_access(uint8_t port);
   static boolean _isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 

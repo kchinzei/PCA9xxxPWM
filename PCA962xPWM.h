@@ -97,10 +97,10 @@ public:
    * other devices that understand the reset sequence.
    */
   static void reset(TwoWire *i2cPort);
-  void reset(void);
+  void reset();
 
-  virtual uint8_t number_of_ports(void) = 0;
-  virtual String type_name(void) = 0;
+  virtual uint8_t number_of_ports() const = 0;
+  virtual String type_name() const = 0;
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 

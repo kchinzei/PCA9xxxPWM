@@ -41,7 +41,7 @@ boolean PCA962xPWM::begin() {
   }
 }
 
-void PCA962xPWM::reset(void) {
+void PCA962xPWM::reset() {
   PCA962xPWM::reset(_i2cPort);
 }
 

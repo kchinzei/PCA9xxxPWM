@@ -57,7 +57,7 @@ public:
    * @note I did not use vector as it's deviated from std::vector in Arduino.
    * @note For default I2C address range see https://www.i2c-bus.org/addressing/
    */
-  uint8_t scanDevice(PCA9xxxPWM **buf, uint8_t len, bool reset = false,
+    uint8_t scanDevice(PCA9xxxPWM** const buf, uint8_t len, bool reset = false,
                      uint8_t i2cAddrFrom = 0x08,
                      uint8_t i2cAddrTo = 0x77);
 

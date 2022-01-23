@@ -148,8 +148,8 @@ public:
    */
   virtual uint8_t errflag(uint8_t port) = 0;
   
-  virtual uint8_t number_of_ports(void) = 0;
-  virtual String type_name(void) = 0;
+  virtual uint8_t number_of_ports(void) const = 0;
+  virtual String type_name(void) const = 0;
 
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
