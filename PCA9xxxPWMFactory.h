@@ -32,6 +32,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+class PCA9xxxPWM;
 #include "PCA9xxxPWM.h"
 
 class PCA9xxxPWMFactory {
