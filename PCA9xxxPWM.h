@@ -31,8 +31,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include "PCA9xxxPWMFactory.h"
-
 #define ALLPORTS 0xFF
 
 class PCA9xxxPWM {

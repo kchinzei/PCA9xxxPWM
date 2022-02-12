@@ -1,5 +1,5 @@
 # PCA9xxxPWM
-Arduino / C++ class for NXP PCA9xxx I2C connected PWM devices
+Arduino/PlatformIO C++ class for NXP PCA9xxx I2C connected PWM devices
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -7,23 +7,24 @@ Arduino / C++ class for NXP PCA9xxx I2C connected PWM devices
 
 ## About PCA9xxx Series PWM Devices
 
-PCA9xxxPWM is an Arduino library to control PWM outputs of NXP PCA962x, [PCA9685](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-channel-12-bit-pwm-fm-plus-ic-bus-led-controller:PCA9685), PCA995xA I2C bus connected devices.
-PCA962x series are
+PCA9xxxPWM is an Arduino/PlatformIO library to control PWM outputs of NXP PCA962x, [PCA9685](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-channel-12-bit-pwm-fm-plus-ic-bus-led-controller:PCA9685), PCA995xA I2C bus connected devices.
+PCA962x series are 8 bit PWM controllers, with
 [PCA9622](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9622) (16ch),
 [PCA9624](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9624) (8ch),
 [PCA9626](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9626) (24ch).
 'B' can be suffixed.
-PCA995xA series are
+[PCA9685](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-channel-12-bit-pwm-fm-plus-ic-bus-led-controller:PCA9685) is a 16ch 12bit PWM controller.
+PCA995xA series are 8 bit PWM controllers, with
 [PCA9955A](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-channel-fm-plus-ic-bus-57-ma-20-v-constant-current-led-driver:PCA9955BTW) (16ch),
 [PCA9956A](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/24-channel-fm-plus-ic-bus-57-ma-20-v-constant-current-led-driver:PCA9956BTW) (24ch).
 'B*' can be suffixed instead of 'A'. PCA995x (no suffix) are incompatible.
 
 You can find breakout boards from [Switch Science](https://international.switch-science.com/),
-[PCA9622](https://international.switch-science.com/catalog/2388/),
-[PCA9955BTW](https://international.switch-science.com/catalog/2676/) etc.
-[PCA9685 breakout board](https://www.adafruit.com/product/815) is available from Adafruit.
+[PCA9622](https://international.switch-science.com/catalog/2388/),[PCA9624](https://international.switch-science.com/catalog/2389/), [PCA9626](https://international.switch-science.com/catalog/2540/),
+[PCA9955BTW](https://www.switch-science.com/catalog/2676/), [PCA9956BTW](https://www.switch-science.com/catalog/2677/) etc.
+PCA9685 breakout boards are available from [Adafruit](https://www.adafruit.com/product/815), [Sparkfun](https://www.sparkfun.com/products/15316) and Switch Science.
 
-There are NXP official mbed libraries for [PCA962x](https://os.mbed.com/users/nxp_ip/code/PCA962x/) and [PCA995xA](https://os.mbed.com/users/nxp_ip/code/PCA995xA/), but it seems none for Arduino.
+There are NXP official mbed libraries for [PCA962x](https://os.mbed.com/users/nxp_ip/code/PCA962x/) and [PCA995xA](https://os.mbed.com/users/nxp_ip/code/PCA995xA/), but it seems none for Arduino or PlatformIO.
 Adafruit published [PWM Servo Driver Library for PCA9685](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library) for Arduino.
 It is not compatible and applicable to PCA962x, 995xA due to substantial differences from PCA9685. PCA9xxxPWM is here for you.
 
@@ -31,7 +32,7 @@ These devices have different features in number of outputs, allowable current / 
 
 ## Using PCA9xxxPWM
 
-Currently PCA9626, PCA9685 and PCA9955A are implemented and tested.
+Currently PCA9626, PCA9685 and PCA9955A are implemented and tested. Here it is mainly explained for Arduino. Basically same for PlatformIO. See [PlatformIO](#platformio).
 
 Copy `PCA9xxxPWM` folder into 'libraries' folder of Arduino, where Arduino IDE can search for files.
 You can find some examples in `examples` folder.
@@ -79,6 +80,30 @@ float vals[16] = {0.1, 0.2, ... 1};
 pwmdevice.pwm(vals);
 ```
 
+### PlatformIO
+
+It also partly tested for [PlatformIO](https://platformio.org) running on [Visual Studio Code](https://code.visualstudio.com).
+When you use it in a PlatformIO project, basically you can put PCA9xxxPWM folder wherever appropriate (or wherever you like). Default place is `./lib` under the project's root folder.
+But you need to inform where you put it.
+You can use `lib_dir` in `platformio.ini`.
+For example, if you put PCA9xxxPWM folder in `wled00/extLibs` under the project's root folder:
+
+```PlatformIO
+[platformio]
+default_envs = esp32dev
+
+lib_dir = ./wled00/extLibs
+...
+```
+
+This puts `./wled00/extLibs/PCA9xxxPWM` (and any folder in `extLibs`) in the include and source file search.
+So all you need in your code is to include them like:
+
+```C++
+#include <PCA9xxxPWM.h>
+#include <PCA9626.h>
+```
+
 ### Static class member functions
 
 There are a few static class member functions so that you can examine I2C devices before instantiating one. Calling them will force the `TwoWire` object initialized by internally calling `begin()`, which should be no harm.
@@ -105,7 +130,9 @@ If you use `SUBADR3` and need to change it for your purpose,
 you need to implement your own `hasBegun()` and `customHasBegun()`
 by deriving from a concrete class of `PCA9xxxPWM`.
 
-### Hardware dependent member functions and behaviors
+## Hardware dependent member functions and behaviors
+
+### PCA995xA series specific functions
 
 You need to set current gain for PCA995xA devices. Note that there aren't equivalent member functions for other devices.
 
@@ -129,6 +156,8 @@ void exponential_adjustment(boolean exp_on);
 ```
 
 For other devices, it is implemented by software. They behave differently from PCA9955A when turning on/off during controlling PWM outputs.
+
+### PCA9685 specific functions
 
 PCA9685 can change PWM frequency. `PCA9685PWM` has `set_freq()` for this purpose.
 It also accepts an external hardware clock. Other devices has fixed, internal oscillators only. To notify the software, provide `ext_clock`.
