@@ -71,7 +71,9 @@ float PCA9xxxPWM::simple_exp(float refIn) const {
   float refOut = refIn;
 
   if (use_exponential) {
-    if (0 < refIn && refIn < 64.0/255) {
+    if (refIn < 0) {
+      refOut = 0;
+    } else if (refIn < 64.0/255) {
       refOut = 6.0/255 * refIn / 0.25;
     } else if (refIn < 128.0/255) {
       refOut = 12.0/255 * (refIn - 64.0/255) / 0.25 + 6.0/255;
