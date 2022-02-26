@@ -137,14 +137,14 @@ by deriving from a concrete class of `PCA9xxxPWM`.
 
 ### PCA995xA series specific functions
 
-You need to set current gain for PCA995xA devices. Note that there aren't equivalent member functions for other devices.
+You can use current control for PCA995xA devices. Note that there aren't equivalent member functions for other devices.
 
 ```C++
 void PCA995xAPWM::current(uint8_t port, float vp);
 void PCA995xAPWM::current(float *vP);
 ```
 
-`pwm()` uses current control for PCA995xA devices. It also uses PWM control for finer control when value is small. You can take full control of both `pwm()` and `current()` by turning on `set_current_control_mode()`.
+By default `pwm()` uses current control for PCA995xA devices. It also uses PWM control for finer control when value is small. You can take full control of both `pwm()` and `current()` by turning on `set_current_control_mode()`.
 
 ```C++
 void PCA995xAPWM::set_current_control_mode(bool mode)
