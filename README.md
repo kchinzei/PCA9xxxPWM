@@ -67,7 +67,7 @@ if (pwmdevice.begin()) {
   ...
 ```
 
-PCA9xxxPWM controls PWM ratio of each output.
+The core function of `PCA9xxxPWM` is `pwm()` to control PWM ratio of each output.
 
 ```C++
 pwmdevice.pwm(ch, 0.78);
@@ -76,6 +76,7 @@ pwmdevice.pwm(ch, 0.78);
 `pwm()` accepts floating number between 0 and 1 to represent the ratio.
 You can set it one by one. Alternatively you can send an array of values for ALL PWM outputs.
 ```C++
+// Size of array must be at least the number of ports.
 float vals[16] = {0.1, 0.2, ... 1};
 pwmdevice.pwm(vals);
 ```
@@ -103,6 +104,8 @@ So all you need in your code is to include them like:
 #include <PCA9xxxPWM.h>
 #include <PCA9626.h>
 ```
+
+See an example in [WLED-PCA9xxx](https://github.com/kchinzei/WLED-PCA9xxx.git).
 
 ### Static class member functions
 
@@ -137,25 +140,32 @@ by deriving from a concrete class of `PCA9xxxPWM`.
 You need to set current gain for PCA995xA devices. Note that there aren't equivalent member functions for other devices.
 
 ```C++
-void current(uint8_t port, float vp);
-void current(float *vP);
+void PCA995xAPWM::current(uint8_t port, float vp);
+void PCA995xAPWM::current(float *vP);
 ```
 
-PCA995xA devices can also detect open/short circuit of output ports and over temperature conditions.
+`pwm()` uses current control for PCA995xA devices. It also uses PWM control for finer control when value is small. You can take full control of both `pwm()` and `current()` by turning on `set_current_control_mode()`.
+
+```C++
+void PCA995xAPWM::set_current_control_mode(bool mode)
+```
+
+PCA995xA devices can also detect open/short circuit of output ports and over temperature condition.
 `errflag()` returns error conditions.
 Note that calling this function clears the flag, however it does not solve the error. When open/short circuit happens you must turn off such ports for safety.
 
 ```C++
-uint8_t errflag(uint8_t port);
+uint8_t PCA995xAPWM::errflag(uint8_t port);
 ```
 
-PCA9955A has a feature to exponentially enhance the output so that the brightness change felt naturally. Use `exponential_adjustment()` to turn on/off it.
+PCA9955A has a feature to exponentially change the gradation output so that the brightness change felt naturally for human eyes.
+But this feature only works for gradient control.
+Therefore, `PCA9xxxPWM` does it by software for all PCA9xxx devices, for `pwm()` control.
+Use `exponential_adjustment()` to turn on/off it.
 
 ```C++
-void exponential_adjustment(boolean exp_on);
+void PCA9xxxPWM::exponential_adjustment(boolean exp_on);
 ```
-
-For other devices, it is implemented by software. They behave differently from PCA9955A when turning on/off during controlling PWM outputs.
 
 ### PCA9685 specific functions
 
@@ -163,15 +173,15 @@ PCA9685 can change PWM frequency. `PCA9685PWM` has `set_freq()` for this purpose
 It also accepts an external hardware clock. Other devices has fixed, internal oscillators only. To notify the software, provide `ext_clock`.
 
 ```C++
-void freq(float freq, float ext_clock = 0.0);
-float calc_freq(float ext_clock = 0.0);
+void  PCA9685PWM::freq(float freq, float ext_clock = 0.0);
+float PCA9685PWM::calc_freq(float ext_clock = 0.0);
 ```
 
 PCA9685 can switch its outputs between open drain and totem pole. Other devices are open drain outputs. PCA9685 can also invert its outputs.
 
 ```C++
-void totem_pole_outputs(boolean totem_pole);
-void invert_outputs(boolean invert);
+void PCA9685PWM::totem_pole_outputs(boolean totem_pole);
+void PCA9685PWM::invert_outputs(boolean invert);
 ```
 
 By default it is in **totem pole mode, not inverted** after initialization.

@@ -107,16 +107,16 @@ public:
    *
    * @param port  Selecting output port
    *    'ALLPORTS' can be used to set all port duty-cycle same value.
-   * @param v     A floating-point value representing the output current,
+   * @param v     A value representing the output PWM ratio,
    *    specified as a percentage. The value should lie between
    *    0.0f (representing on 0%) and 1.0f (representing on 100%).
    *    Values outside this range will have undefined behavior.
    */
   virtual void pwm(uint8_t port, float v);
-
+  
   /** Set all output port PWM ratio, specified as a percentage (array of float).
    *
-   * @param vp    Array to floating-point values representing the output PWM
+   * @param vp    An Array to floating-point values representing the output PWM
    * ratio, specified as a percentage. The value should lie between 0.0f
    * (representing on 0%) and 1.0f (representing on 100%).
    *
@@ -195,6 +195,10 @@ public:
 
 protected:
   virtual float simple_exp(float refIn) const;
+  virtual void _pwm(uint8_t port, uint8_t v);
+  virtual void _pwm(uint8_t *vp);
+  virtual uint8_t pwm_register_access(uint8_t port) = 0;
+
   uint8_t _i2cAddr;
   TwoWire *_i2cPort;
   boolean use_exponential;
@@ -204,7 +208,6 @@ protected:
 
 private:
   virtual void init() = 0;
-  virtual uint8_t pwm_register_access(uint8_t port) = 0;
 };
 
 #endif

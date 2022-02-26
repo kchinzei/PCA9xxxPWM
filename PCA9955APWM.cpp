@@ -74,11 +74,8 @@ void PCA9955APWM::exponential_adjustment(boolean exp_on) {
   mode2 = exp_on ? mode2 | exp_en : mode2 & (~exp_en);
 
   write(MODE2, mode2);
-}
 
-float PCA9955APWM::simple_exp(float refIn) const {
-  // Serial.println("override simple_exp()");
-  return refIn;
+  PCA9xxxPWM::exponential_adjustment(exp_on);
 }
 
 uint8_t PCA9955APWM::pwm_register_access(uint8_t port) {

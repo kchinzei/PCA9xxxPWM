@@ -51,19 +51,76 @@ void PCA995xAPWM::reset(TwoWire *i2cPort) {
   write(ADR_RESET, i2cPort, va, sizeof(va));
 }
 
+// Current limit and PWM
+
+void PCA995xAPWM::set_current_control_mode(bool mode) {
+  use_current_control = mode;
+}
+
+#define SMALL_V 16
+
+void PCA995xAPWM::pwm(uint8_t port, float v) {
+  if (use_current_control) {
+    PCA9xxxPWM::pwm(port, v);
+  } else {
+    v = simple_exp(v);
+    uint8_t vc = v * 255;
+    uint8_t vp = 255;
+    if (vc < SMALL_V) {
+      // When small we represent fractional part using _pwm()
+      vc++;
+      vp = v / vc * 65535;
+    }
+    _pwm(port, vp);
+    _current(port, vc);
+  }
+}
+
+void PCA995xAPWM::pwm(float *vp) {
+  uint8_t n_of_ports = number_of_ports();
+  uint8_t data_c[n_of_ports];
+  uint8_t data_p[n_of_ports];
+
+  for (int i = 1; i <= n_of_ports; i++) {
+    float v = simple_exp(*vp++)*255;
+    data_c[i] = v * 255;
+    data_p[i] = 255;
+    if (data_c[i] < SMALL_V) {
+      data_c[i]++;
+      data_p[i] = v / data_c[i] * 65535;
+    }
+  }
+  _pwm(data_p);
+  _current(data_c);
+}
+
 void PCA995xAPWM::current(uint8_t port, float v) {
-  uint8_t reg_addr = current_register_access(port);
-  write(reg_addr, (uint8_t)(v * 255.0));
+  _current(port, (uint8_t)(v * 255));
 }
 
 void PCA995xAPWM::current(float *vp) {
+  uint8_t n_of_ports = number_of_ports();
+  uint8_t data[n_of_ports];
+
+  for (int i = 1; i <= n_of_ports; i++) {
+    data[i] = (uint8_t)(*vp++ * 255);
+  }
+  _current(data);
+}
+
+void PCA995xAPWM::_current(uint8_t port, uint8_t v) {
+  uint8_t reg_addr = current_register_access(port);
+  write(reg_addr, v);
+}
+
+void PCA995xAPWM::_current(uint8_t *vp) {
   uint8_t n_of_ports = number_of_ports();
   uint8_t data[n_of_ports + 1];
 
   *data = current_register_access(0) | AUTO_INCREMENT;
 
   for (int i = 1; i <= n_of_ports; i++) {
-    data[i] = (uint8_t)(*vp++ * 255.0);
+    data[i] = *vp++;
   }
   write(data, sizeof(data));
 }

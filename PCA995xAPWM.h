@@ -124,7 +124,7 @@ public:
    *    0.0f (representing on 0%) and 1.0f (representing on 100%).
    *    Values outside this range will have undefined behavior.
    */
-  void current(uint8_t port, float vp);
+  void current(uint8_t port, float v);
 
   /** Set output ports' current, specified as a percentage (array of float)
    *
@@ -147,7 +147,22 @@ public:
    * @note Error status is tested and the flag is set when pwm value is between 8/255 and 254/255.
    */
   virtual uint8_t errflag(uint8_t port) = 0;
-  
+
+  /** Using current control for PWM
+   *
+   * @param mode  Switch current control.
+   *    Default is off. When true is given, current() and pwm() work independently.
+   *    You must provide appropriate values for both. Setting current() = 0 will disable
+   *    The PWM output regardless to setting by pwm() command.
+   *    When false is given, calls of pwm() invoke set of pwm() and current().
+   *    pwm() is fixed to 255, but when brightness is low, current() and pwm() are used as
+   *    16-bit controller.
+   */
+  void set_current_control_mode(bool mode);
+
+  virtual void pwm(uint8_t port, float v);
+  virtual void pwm(float *vp);
+
   virtual uint8_t number_of_ports(void) const = 0;
   virtual String type_name(void) const = 0;
 
@@ -161,9 +176,12 @@ protected:
     ADR_SUBADR_DEFAULT = 0x76,
   };
 
+  void _current(uint8_t port, uint8_t v);
+  void _current(uint8_t *vP);
+
 private:
   virtual uint8_t current_register_access(uint8_t port) = 0;
-
+  bool use_current_control = false;
 };
 
 #endif

@@ -87,20 +87,8 @@ float PCA9xxxPWM::simple_exp(float refIn) const {
 }
 
 void PCA9xxxPWM::pwm(uint8_t port, float v) {
-  uint8_t reg_addr = pwm_register_access(port);
-
-  v = simple_exp(v);
-  if (ALLPORTS == reg_addr) {
-    uint8_t np = number_of_ports();
-    float va[np];
-
-    for (int i = 0; i < np; i++) {
-      va[i] = v;
-    }
-    pwm(va);
-  } else {
-    write(reg_addr, v*255);
-  }
+  uint8_t uv = simple_exp(v) * 255;
+  _pwm(port, uv);
 }
 
 void PCA9xxxPWM::pwm(float *vp) {
@@ -111,6 +99,35 @@ void PCA9xxxPWM::pwm(float *vp) {
 
   for (int i = 1; i <= n_of_ports; i++) {
     data[i] = simple_exp(*vp++)*255;
+  }
+  _pwm(data);
+}
+
+// Protected
+void PCA9xxxPWM::_pwm(uint8_t port, uint8_t v) {
+  uint8_t reg_addr = pwm_register_access(port);
+
+  if (ALLPORTS == reg_addr) {
+    uint8_t np = number_of_ports();
+    uint8_t va[np];
+
+    for (int i = 0; i < np; i++) {
+      va[i] = v;
+    }
+    _pwm(va);
+  } else {
+    write(reg_addr, v);
+  }
+}
+
+void PCA9xxxPWM::_pwm(uint8_t *vp) {
+  uint8_t n_of_ports = number_of_ports();
+  uint8_t data[n_of_ports + 1];
+
+  *data = pwm_register_access(0) | AUTO_INCREMENT;
+
+  for (int i = 1; i <= n_of_ports; i++) {
+    data[i] = *vp++;
   }
   write(data, sizeof(data));
 }

@@ -186,7 +186,6 @@ private:
   void init();
   uint8_t pwm_register_access(uint8_t port);
   uint8_t current_register_access(uint8_t port);
-  float simple_exp(float refIn) const;
   static boolean _isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
   const uint8_t n_of_ports;
