@@ -155,6 +155,29 @@ void PCA9685PWM::pwm(float *vp) {
   }
 }
 
+float PCA9685PWM::pwm(uint8_t port) {
+  uint8_t reg_addr = pwm_register_access(port);
+  uint8_t val[4];
+
+  for (uint8_t i=0; i<4; i++) {
+    val[i] = read(reg_addr++);
+  }
+  
+  if (val[1] == 0x10) {
+    return 1.0;
+  } else if (val[2] == 0x10) {
+    return 0.0;
+  } else {
+    uint16_t onStep  = ((val[1] & 0x0F) << 8) + val[0];
+    uint16_t offStep = ((val[3] & 0x0F) << 8) + val[2];
+    if (offStep > onStep) {
+      return ((float)(offStep - onStep)) / (STEPS - 1);
+    } else {
+      return ((float)(STEPS + onStep - offStep)) / (STEPS - 1);
+    }
+  }
+}
+
 void PCA9685PWM::freq(float freq, float ext_clock) {
   if (freq > 0) {
     float clock = ext_clock == 0.0? BASECLOCK_HERTZ : ext_clock;

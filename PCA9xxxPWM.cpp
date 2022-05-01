@@ -105,11 +105,19 @@ void PCA9xxxPWM::pwm(float *vp) {
   _pwm(data);
 }
 
+float PCA9xxxPWM::get_pwm(uint8_t port) {
+  uint8_t reg_addr = pwm_register_access(port);
+  return read(reg_addr) / 255.0;
+}
+
 // Protected
 void PCA9xxxPWM::_pwm(uint8_t port, uint8_t v) {
   uint8_t reg_addr = pwm_register_access(port);
 
+  // const String c = type_name();
+  // Serial.printf(" [%s Adr: x%x p %d (reg: x%x exp:%d)] ", c.c_str(), _i2cAddr, v, reg_addr, use_exponential);
   if (ALLPORTS == reg_addr) {
+    // PCA962x and PCA9685
     uint8_t np = number_of_ports();
     uint8_t va[np];
 

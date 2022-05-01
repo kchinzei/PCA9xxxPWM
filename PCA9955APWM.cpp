@@ -46,6 +46,7 @@ void PCA9955APWM::init() {
   };
 
   write(init_array, sizeof(init_array));
+  write(PCA9955APWM::OFFSET, 0xff); // Max offset
   pwm(ALLPORTS, 0.0);
   current(ALLPORTS, 1.0);
   // gradation_group_clear();
@@ -67,6 +68,7 @@ void PCA9955APWM::customHasBegun() {
 }
 
 void PCA9955APWM::exponential_adjustment(boolean exp_on) {
+  /*
   uint8_t exp_en = 1 << 2;
   uint8_t mode2 = read(MODE2);
 
@@ -74,7 +76,7 @@ void PCA9955APWM::exponential_adjustment(boolean exp_on) {
   mode2 = exp_on ? mode2 | exp_en : mode2 & (~exp_en);
 
   write(MODE2, mode2);
-
+  */
   PCA9xxxPWM::exponential_adjustment(exp_on);
 }
 

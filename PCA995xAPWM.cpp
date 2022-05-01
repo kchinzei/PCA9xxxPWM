@@ -108,6 +108,11 @@ void PCA995xAPWM::current(float *vp) {
   _current(data);
 }
 
+float PCA995xAPWM::get_current(uint8_t port) {
+  uint8_t reg_addr = current_register_access(port);
+  return read(reg_addr) / 255.0;
+}
+
 void PCA995xAPWM::_current(uint8_t port, uint8_t v) {
   uint8_t reg_addr = current_register_access(port);
   write(reg_addr, v);

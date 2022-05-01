@@ -85,6 +85,8 @@ public:
 
   /** Customize for hasBegun(), called from begin().
    * It modifies SUBADR3 from the reset state.
+   * If you need to use SUBADR3 for your purpose, you need to override customHasBegun() and
+   * hasBegun() to provide other way to examine if it has been initialized as expected.
    * @note Override this and hasBegun() when SUBADR3 is necessary to modify for your purpose.
    */
   virtual void customHasBegun() = 0;
@@ -124,6 +126,14 @@ public:
    *    The length of array should be at least number_of_ports().
    */
   virtual void pwm(float *vp);
+
+  /** Get the state of PWM register, specified as a percentage (float).
+   *
+   * @param port  Selecting port. 'ALLPORTS' ignored.
+   * @return      A value representing the state of PWM ratio,
+   *    between 0.0f (representing 0%) and 1.0f (representing 100%).
+   */
+  virtual float get_pwm(uint8_t port);
 
   /** Number of PWM ports of this device.
    *

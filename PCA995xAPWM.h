@@ -137,6 +137,14 @@ public:
    */
   void current(float *vP);
 
+  /** Get the state of current register, specified as a percentage (float).
+   *
+   * @param port  Selecting port. 'ALLPORTS' ignored.
+   * @return      A value representing the state of current register,
+   *    between 0.0f (representing on 0%) and 1.0f (representing on 100%).
+   */
+  float get_current(uint8_t port);
+
   /** Get error status of a port
    *
    * @param port  Selecting output port
@@ -152,11 +160,10 @@ public:
    *
    * @param mode  Switch current control.
    *    Default is off. When true is given, current() and pwm() work independently.
-   *    You must provide appropriate values for both. Setting current() = 0 will disable
-   *    The PWM output regardless to setting by pwm() command.
-   *    When false is given, calls of pwm() invoke set of pwm() and current().
-   *    pwm() is fixed to 255, but when brightness is low, current() and pwm() are used as
-   *    16-bit controller.
+   *    You must provide appropriate values for both.
+   *    When false is given, do not use current(). Calling pwm() controls both PWM and current.
+   *    Calling pwm() actually controls current while PWM fixed to 255,
+   *    When brightness is low, PWM is used as fractional part to provide a fine control.
    */
   void set_current_control_mode(bool mode);
 
