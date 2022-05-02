@@ -155,7 +155,7 @@ void PCA9685PWM::pwm(float *vp) {
   }
 }
 
-float PCA9685PWM::pwm(uint8_t port) {
+float PCA9685PWM::get_pwm(uint8_t port) {
   uint8_t reg_addr = pwm_register_access(port);
   uint8_t val[4];
 

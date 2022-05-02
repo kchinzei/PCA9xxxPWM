@@ -146,7 +146,7 @@ public:
 
   void pwm(uint8_t port, float v);
   void pwm(float *vp);
-  float pwm(uint8_t port);
+  float get_pwm(uint8_t port);
 
   void freq(float freq, float ext_clock = 0.0);
   float calc_freq(float ext_clock = 0.0);
