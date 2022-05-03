@@ -25,11 +25,17 @@
   https://github.com/kchinzei/PCA9xxxPWM
 */
 
-#include <PCA9955APWM.h>
-#define DEFAULT_I2C_ADDR_995x 0x65 // At your preference (of your h/w setting)
-PCA9955APWM pwm(DEFAULT_I2C_ADDR_995x);
-
 #include <Wire.h>
+#include <PCA9955APWM.h>
+#include <PCA9956APWM.h>
+#define DEFAULT_I2C_ADDR_9955 0x65 // Switch Science #2676 default
+#define DEFAULT_I2C_ADDR_9956 0x3F // Switch Science #2677 default
+
+// Here you can change which IC to test
+#define PCA9XXXPWM PCA9956APWM
+#define PCA9XXX_I2C_ADDR DEFAULT_I2C_ADDR_9956
+
+PCA9XXXPWM pwm(PCA9XXX_I2C_ADDR);
 
 uint8_t n_of_ports = 0;
 boolean verbose = false;
@@ -114,6 +120,7 @@ void loop() {
     test_err(i);
     delay(100);
   }
+  Serial.println("");
   delay(500);
   
   Serial.println("Turn off condition - won't detect an open/short circuit error");
@@ -122,21 +129,32 @@ void loop() {
     test_err(i);
     delay(100);
   }
+  Serial.println("");
   delay(500);
 
-  Serial.println("Turn on all condition");
+  Serial.println("Turn on all condition, pwm=currect=max");
   ledout_port(0b10);
   pwm.pwm(ALLPORTS, 1.0); // Turn on (almost) all
   test_err(ALLPORTS); // if any errors found
+  Serial.println("");
   delay(500);
-  
+
+  Serial.println("Turn on with low current -> potential false positive on short circuit");
+  ledout_port(0b10);
+  pwm.pwm(ALLPORTS, 1.0/255); // Turn on weakly
+  test_err(ALLPORTS); // if any errors found
+  Serial.println("");
+  delay(500);
+
+
   Serial.println("Turn on FULL condition");
   ledout_port(0b01);
   for (int i = 0; i < n_of_ports; i++) {
     test_err(i);
     delay(100);
   }
+  Serial.println("");
   delay(500);
-  
+
   verbose = false;
 }

@@ -25,15 +25,27 @@
   https://github.com/kchinzei/PCA9xxxPWM
 */
 
-#include <PCA9955APWM.h>
-#define DEFAULT_I2C_ADDR 0x65
-PCA9955APWM pwm(DEFAULT_I2C_ADDR);
-
-#include <PCA9626PWM.h>
-//#define DEFAULT_I2C_ADDR 0x40
-// PCA9626PWM pwm(DEFAULT_I2C_ADDR);
-
 #include <Wire.h>
+#include <PCA9622PWM.h>
+#include <PCA9624PWM.h>
+#include <PCA9626PWM.h>
+#include <PCA9632PWM.h>
+#include <PCA9685PWM.h>
+#include <PCA9955APWM.h>
+#include <PCA9956APWM.h>
+#define DEFAULT_I2C_ADDR_9622 0x72 // Switch Science #2388 mod SJ2
+#define DEFAULT_I2C_ADDR_9624 0x60 // Switch Science #2389 default
+#define DEFAULT_I2C_ADDR_9626 0x40 // Switch Science #2540 default
+#define DEFAULT_I2C_ADDR_9632 0x62 // Switch Science #2378 default
+#define DEFAULT_I2C_ADDR_9685 0x40 // Adafruit #815 default
+#define DEFAULT_I2C_ADDR_9955 0x65 // Switch Science #2676 default
+#define DEFAULT_I2C_ADDR_9956 0x3F // Switch Science #2677 default
+
+// Here you can change which IC to test
+#define PCA9XXXPWM PCA9622PWM
+#define PCA9XXX_I2C_ADDR DEFAULT_I2C_ADDR_9622
+
+PCA9XXXPWM pwm(PCA9XXX_I2C_ADDR);
 
 uint8_t n_of_ports = 0;
 
@@ -77,7 +89,7 @@ void test_exponential() {
 int i = 0;
 
 void loop() {
-  pwm.exponential_adjustment(i % 2 == 0);
+  pwm.exponential_adjustment(i % 2 == 0); // This dosn't change the brightness.
   delay(1000);
   i++;
 }

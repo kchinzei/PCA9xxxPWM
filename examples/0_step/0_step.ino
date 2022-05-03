@@ -24,20 +24,27 @@
   Kiyo Chinzei
   https://github.com/kchinzei/PCA9xxxPWM
 */
-
-#include <PCA9955APWM.h>
-#define DEFAULT_I2C_ADDR_995x 0x65 // At your preference (of your h/w setting)
-//PCA9955APWM pwm(DEFAULT_I2C_ADDR_995x);
-
-#include <PCA9626PWM.h>
-#define DEFAULT_I2C_ADDR_962x 0x40 // At your preference (of your h/w setting)
-// PCA9626PWM pwm(DEFAULT_I2C_ADDR_962x);
-
-#include <PCA9685PWM.h>
-#define DEFAULT_I2C_ADDR_9685 0x40 // At your preference (of your h/w setting)
-PCA9685PWM pwm(DEFAULT_I2C_ADDR_9685);
-
 #include <Wire.h>
+#include <PCA9622PWM.h>
+#include <PCA9624PWM.h>
+#include <PCA9626PWM.h>
+#include <PCA9632PWM.h>
+#include <PCA9685PWM.h>
+#include <PCA9955APWM.h>
+#include <PCA9956APWM.h>
+#define DEFAULT_I2C_ADDR_9622 0x72 // Switch Science #2388 mod SJ2
+#define DEFAULT_I2C_ADDR_9624 0x60 // Switch Science #2389 default
+#define DEFAULT_I2C_ADDR_9626 0x40 // Switch Science #2540 default
+#define DEFAULT_I2C_ADDR_9632 0x62 // Switch Science #2378 default
+#define DEFAULT_I2C_ADDR_9685 0x40 // Adafruit #815 default
+#define DEFAULT_I2C_ADDR_9955 0x65 // Switch Science #2676 default
+#define DEFAULT_I2C_ADDR_9956 0x3F // Switch Science #2677 default
+
+// Here you can change which IC to test
+#define PCA9XXXPWM PCA9956APWM
+#define PCA9XXX_I2C_ADDR DEFAULT_I2C_ADDR_9956
+
+PCA9XXXPWM pwm(PCA9XXX_I2C_ADDR);
 
 uint8_t n_of_ports = 0;
 boolean verbose = false;
@@ -46,9 +53,9 @@ void setup() {
   Serial.begin(115200);
   delay(100);
 
+  pwm.begin();
+  pwm.reset();
   if (pwm.begin() == false) {
-    Serial.println("Fail. Attempt to reset");
-    pwm.reset();
     if (pwm.begin() == false) {
       Serial.println("Device does not appear to be connected. Please check "
                      "wiring. Freezing...");
@@ -68,6 +75,43 @@ void setup() {
   }
 }
 
+void printhex(int val) {
+  if (val < 0 || val > 0xFF) {
+    Serial.print("--");
+  } else {
+    if (val <= 0x0F)
+      Serial.print("0");
+    Serial.print(val, HEX);
+  }
+}
+
+void print_registers(PCA9xxxPWM *pwm, size_t len) {
+  /*
+   * Register length varies between chips.
+   * PCA9622 : 0x1B
+   * PCA9624 : 0x11
+   * PCA9626 : 0x26
+   * PCA9685 : 0xFF
+   * PCA9955B: 0x49
+   * PCA9956B: 0x46
+   */
+  Serial.print("I2C Adr: 0x");
+  Serial.println(pwm->get_i2cAddr(), HEX);
+  Serial.println("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n");
+  for (int n = 0; n <= len; n++) {
+    if ((n & 0x0F) == 0) {
+      printhex(n);
+      Serial.print(":");
+    }
+    Serial.print(" ");
+    int val = pwm->read(n);
+    printhex(val);
+    if ((n & 0x0F) == 0x0F) {
+      Serial.println("");
+    }
+  }
+}
+
 void test_one_by_one(int i) {
   for (int j = 0; j < n_of_ports; j++) {
     pwm.pwm(j, (j == i % n_of_ports) ? 1.0 : 0);
@@ -80,4 +124,5 @@ void loop() {
   test_one_by_one(i++);
   delay(200);
   verbose = false;
+  print_registers(&pwm, 0x4F);
 }
