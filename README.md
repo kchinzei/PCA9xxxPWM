@@ -11,7 +11,8 @@ PCA9xxxPWM is an Arduino/PlatformIO library to control PWM outputs of NXP PCA962
 PCA962x series are 8 bit PWM controllers, with
 [PCA9622](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9622) (16ch),
 [PCA9624](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9624) (8ch),
-[PCA9626](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9626) (24ch).
+[PCA9626](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-bit-fm-plus-ic-bus-100-ma-40-v-led-driver:PCA9626) (24ch),
+[PCA9632](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/4-bit-fm-plus-ic-bus-low-power-led-driver:PCA9632) (4ch).
 'B' can be suffixed.
 [PCA9685](https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-channel-12-bit-pwm-fm-plus-ic-bus-led-controller:PCA9685) is a 16ch 12bit PWM controller.
 PCA995xA series are 8 bit PWM controllers, with
@@ -32,7 +33,7 @@ These devices have different features in number of outputs, allowable current / 
 
 ## Using PCA9xxxPWM
 
-Currently PCA9626, PCA9685 and PCA9955A are implemented and tested. Here it is mainly explained for Arduino. Basically same for PlatformIO. See [PlatformIO](#platformio).
+Currently PCA9622, PCA9624, PCA9626, PCA9632, PCA9685, PCA9955A and PCA9956A are implemented and tested. Here it is mainly explained for Arduino. Basically same for PlatformIO. See [PlatformIO](#platformio).
 
 Copy `PCA9xxxPWM` folder into 'libraries' folder of Arduino, where Arduino IDE can search for files.
 You can find some examples in `examples` folder.
@@ -144,7 +145,7 @@ void PCA995xAPWM::current(uint8_t port, float vp);
 void PCA995xAPWM::current(float *vP);
 ```
 
-By default `pwm()` uses current control for PCA995xA devices. It also uses PWM control for finer control when value is small. You can take full control of both `pwm()` and `current()` by turning on `set_current_control_mode()`.
+By default `pwm()` of PCA995xAPWM uses current control for PCA995xA devices. It also uses PWM control for finer control when value is small. You can take full control of both `pwm()` and `current()` by turning on `set_current_control_mode()`.
 
 ```C++
 void PCA995xAPWM::set_current_control_mode(bool mode)
@@ -152,11 +153,13 @@ void PCA995xAPWM::set_current_control_mode(bool mode)
 
 PCA995xA devices can also detect open/short circuit of output ports and over temperature condition.
 `errflag()` returns error conditions.
-Note that calling this function clears the flag, however it does not solve the error. When open/short circuit happens you must turn off such ports for safety.
+Note that calling this function clears the flag, however it does not solve the physical fault. When open/short circuit happens you must turn off such ports for safety.
 
 ```C++
 uint8_t PCA995xAPWM::errflag(uint8_t port);
 ```
+
+When current output is small, it can raise false short circuit error. It's because the error detection is done by examining the effective output voltage exceeds ca. 2.85V. When the current is small, output voltage can exceed this threshold.
 
 PCA9955A has a feature to exponentially change the gradation output so that the brightness change felt naturally for human eyes.
 But this feature only works for gradient control.
@@ -177,7 +180,7 @@ void  PCA9685PWM::freq(float freq, float ext_clock = 0.0);
 float PCA9685PWM::calc_freq(float ext_clock = 0.0);
 ```
 
-PCA9685 can switch its outputs between open drain and totem pole. Other devices are open drain outputs. PCA9685 can also invert its outputs.
+PCA9685 and PCA9632 can switch its outputs between open drain and totem pole. Other devices are open drain outputs. PCA9685 and PCA9632 can also invert its outputs.
 
 ```C++
 void PCA9685PWM::totem_pole_outputs(boolean totem_pole);
@@ -186,6 +189,7 @@ void PCA9685PWM::invert_outputs(boolean invert);
 
 By default it is in **totem pole mode, not inverted** after initialization.
 PCA9xxx changes `PCA9685PWM` by calling `begin()` to open-drain, inverted so as it works same as other devices.
+Currently these functions are not implemented for `PCA9632PWM`.
 
 ### Functions that need some caution
 
