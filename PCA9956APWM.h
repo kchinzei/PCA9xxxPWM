@@ -26,7 +26,7 @@
 */
 
 /*
-  This software also works for PCA995xB. See
+  This software also works for PCA996xB. See
   https://os.mbed.com/components/PCA9955A-PCA9956A-16-24-channel-constant/
 
   Part of this source code uses
@@ -34,30 +34,30 @@
   Original header is below. Note it's Apache 2 License.
 */
 
-/** PCA9955A constant current LED driver
+/** PCA9956A constant current LED driver
  *
- *  An operation sample of PCA9955A 16-channel Fm+ I2C-bus 57mA/20V constant
- * current LED driver. mbed accesses PCA9955A registers via I2C.
+ *  An operation sample of PCA9956A 24-channel Fm+ I2C-bus 57mA/20V constant current LED driver.
+ *  mbed accesses the PCA9956A registers through I2C.
  *
- *  @class   PCA9955A
+ *  @class   PCA9956A
  *  @author  Akifumi (Tedd) OKANO, NXP Semiconductors
  *  @version 0.6
  *  @date    19-Mar-2015
  *
  *  Released under the Apache 2 license
  *
- *  About PCA9955A:
- *    http://www.nxp.com/products/interface_and_connectivity/i2c/i2c_led_display_control/PCA9955ATW.html
+ *  About PCA9956A:
+ *    http://www.nxp.com/products/interface_and_connectivity/i2c/i2c_led_display_control/PCA9956ATW.html
  */
 
-#ifndef _PCA9955A_PWM_H_
-#define _PCA9955A_PWM_H_
+#ifndef _PCA9956A_PWM_H_
+#define _PCA9956A_PWM_H_
 
 #include "PCA995xAPWM.h"
 
-class PCA9955APWM : public PCA995xAPWM {
+class PCA9956APWM : public PCA995xAPWM {
 public:
-  /** Name of the PCA9955A registers (for direct register access) */
+  /** Name of the PCA9956A registers (for direct register access) */
   enum command_reg {
     MODE1 = 0x00,          /**< MODE1 register      */
     MODE2,                 /**< MODE2 register      */
@@ -65,7 +65,9 @@ public:
     LEDOUT1,               /**< LEDOUT1 register    */
     LEDOUT2,               /**< LEDOUT2 register    */
     LEDOUT3,               /**< LEDOUT3 register    */
-    GRPPWM = 0x06,         /**< GRPPWM register     */
+    LEDOUT4,               /**< LEDOUT4 register    */
+    LEDOUT5,               /**< LEDOUT5 register    */
+    GRPPWM,                /**< GRPPWM register     */
     GRPFREQ,               /**< GRPFREQ register    */
     PWM0,                  /**< PWM0 register       */
     PWM1,                  /**< PWM1 register       */
@@ -83,6 +85,14 @@ public:
     PWM13,                 /**< PWM13 register      */
     PWM14,                 /**< PWM14 register      */
     PWM15,                 /**< PWM15 register      */
+    PWM16,                 /**< PWM15 register      */
+    PWM17,                 /**< PWM17 register      */
+    PWM18,                 /**< PWM18 register      */
+    PWM19,                 /**< PWM19 register      */
+    PWM20,                 /**< PWM20 register      */
+    PWM21,                 /**< PWM21 register      */
+    PWM22,                 /**< PWM22 register      */
+    PWM23,                 /**< PWM23 register      */
     IREF0,                 /**< IREF0 register      */
     IREF1,                 /**< IREF1 register      */
     IREF2,                 /**< IREF2 register      */
@@ -99,30 +109,14 @@ public:
     IREF13,                /**< IREF13 register     */
     IREF14,                /**< IREF14 register     */
     IREF15,                /**< IREF15 register     */
-    RAMP_RATE_GRP0,        /**< RAMP_RATE_GRP0 register */
-    STEP_TIME_GRP0,        /**< STEP_TIME_GRP0 register */
-    HOLD_CNTL_GRP0,        /**< HOLD_CNTL_GRP0 register */
-    IREF_GRP0,             /**< IREF_GRP0 register      */
-    RAMP_RATE_GRP1,        /**< RAMP_RATE_GRP1 register */
-    STEP_TIME_GRP1,        /**< STEP_TIME_GRP1 register */
-    HOLD_CNTL_GRP1,        /**< HOLD_CNTL_GRP1 register */
-    IREF_GRP1,             /**< IREF_GRP1 register      */
-    RAMP_RATE_GRP2,        /**< RAMP_RATE_GRP2 register */
-    STEP_TIME_GRP2,        /**< STEP_TIME_GRP2 register */
-    HOLD_CNTL_GRP2,        /**< HOLD_CNTL_GRP2 register */
-    IREF_GRP2,             /**< IREF_GRP2 register      */
-    RAMP_RATE_GRP3,        /**< RAMP_RATE_GRP3 register */
-    STEP_TIME_GRP3,        /**< STEP_TIME_GRP3 register */
-    HOLD_CNTL_GRP3,        /**< HOLD_CNTL_GRP3 register */
-    IREF_GRP3,             /**< IREF_GRP3 register      */
-    GRAD_MODE_SEL0 = 0x38, /**< GRAD_MODE_SEL0 register */
-    GRAD_MODE_SEL1,        /**< GRAD_MODE_SEL1 register */
-    GRAD_GRP_SEL0,         /**< GRAD_GRP_SEL0 register  */
-    GRAD_GRP_SEL1,         /**< GRAD_GRP_SEL1 register  */
-    GRAD_GRP_SEL2,         /**< GRAD_GRP_SEL2 register  */
-    GRAD_GRP_SEL3,         /**< GRAD_GRP_SEL3 register  */
-    GRAD_CNTL,             /**< GRAD_CNTL register      */
-    OFFSET = 0x3F,         /**< OFFSET register     */
+    IREF17,                /**< IREF17 register     */
+    IREF18,                /**< IREF18 register     */
+    IREF19,                /**< IREF19 register     */
+    IREF20,                /**< IREF20 register     */
+    IREF21,                /**< IREF21 register     */
+    IREF22,                /**< IREF22 register     */
+    IREF23,                /**< IREF23 register     */
+    OFFSET  = 0x3A,        /**< OFFSET register     */
     SUBADR1,               /**< SUBADR1 register    */
     SUBADR2,               /**< SUBADR2 register    */
     SUBADR3,               /**< SUBADR3 register    */
@@ -133,17 +127,18 @@ public:
     EFLAG1,                /**< EFLAG1 register     */
     EFLAG2,                /**< EFLAG2 register     */
     EFLAG3,                /**< EFLAG3 register     */
+    EFLAG4,                /**< EFLAG4 register     */
+    EFLAG5,                /**< EFLAG5 register     */
 
     REGISTER_START = MODE1,
     LEDOUT_REGISTER_START = LEDOUT0,
     PWM_REGISTER_START = PWM0,
     IREF_REGISTER_START = IREF0,
     ERR_REGISTER_START = EFLAG0,
-    GRAD_GROUP_OFFSET = RAMP_RATE_GRP1 - RAMP_RATE_GRP0
   };
                    
-  PCA9955APWM(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
-  ~PCA9955APWM();
+  PCA9956APWM(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
+  ~PCA9956APWM();
 
   boolean hasBegun();
   void customHasBegun();
@@ -154,16 +149,9 @@ public:
 
   uint8_t errflag(uint8_t port);
 
-  /** Overrides the method in the base class, because this device has its own
-   * h/w function.
-   *
-   * @param exp_on Turn on/off exponential scale.
-   */
-  void exponential_adjustment(boolean exp_on);
-
   static boolean isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort = &Wire);
 
-  static String class_type() { return "PCA9955A"; };
+  static String class_type() { return "PCA9956A"; };
 
   enum {
     MODE1_AIF = 0x80,
@@ -179,7 +167,6 @@ public:
     MODE2_DMBLNK = 0x20,
     MODE2_CLRERR = 0x10,
     MODE2_OCH = 0x08,
-    MODE2_EXP_EN = 0x04,
   };
 
 private:
@@ -191,7 +178,7 @@ private:
   const uint8_t n_of_ports;
 
   enum {
-    ADR_SUBADR_DEFAULT = 0x76,
+    ADR_SUBADR_DEFAULT = 0x77,
   };
 };
 

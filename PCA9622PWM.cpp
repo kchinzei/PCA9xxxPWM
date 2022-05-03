@@ -25,14 +25,14 @@
   https://github.com/kchinzei/PCA9xxxPWM
 */
 
-#include "PCA9626PWM.h"
+#include "PCA9622PWM.h"
 
-PCA9626PWM::PCA9626PWM(uint8_t i2cAddr, TwoWire *i2cPort)
-    : PCA962xPWM(i2cAddr, i2cPort), n_of_ports(24) {}
+PCA9622PWM::PCA9622PWM(uint8_t i2cAddr, TwoWire *i2cPort)
+    : PCA962xPWM(i2cAddr, i2cPort), n_of_ports(16) {}
 
-PCA9626PWM::~PCA9626PWM() {}
+PCA9622PWM::~PCA9622PWM() {}
 
-void PCA9626PWM::init() {
+void PCA9622PWM::init() {
   uint8_t init_array0[] = {
       PCA962xPWM::AUTO_INCREMENT | REGISTER_START, //  Command
       0x01, 0x05,                                  //  MODE1, MODE2
@@ -54,40 +54,40 @@ void PCA9626PWM::init() {
 #define CUSTOM_SUBADR3_VAL 0xEA /* Default is 0xE8 */
 #define SUBADR_MASK 0xFE /* bit 0 is reserved so we assume it can be changed */
 
-boolean PCA9626PWM::hasBegun() {
-    return isConnected() && ((read(PCA9626PWM::SUBADR3) & SUBADR_MASK) == (CUSTOM_SUBADR3_VAL & SUBADR_MASK));
+boolean PCA9622PWM::hasBegun() {
+    return isConnected() && ((read(PCA9622PWM::SUBADR3) & SUBADR_MASK) == (CUSTOM_SUBADR3_VAL & SUBADR_MASK));
 }
 
-void PCA9626PWM::customHasBegun() {
+void PCA9622PWM::customHasBegun() {
   uint8_t adr_array[] = {
-      PCA9626PWM::SUBADR3,
+      PCA9622PWM::SUBADR3,
       CUSTOM_SUBADR3_VAL & SUBADR_MASK
   };
   write(adr_array, sizeof(adr_array));
 }
 
-uint8_t PCA9626PWM::pwm_register_access(uint8_t port) {
+uint8_t PCA9622PWM::pwm_register_access(uint8_t port) {
   if (port < n_of_ports)
     return PWM_REGISTER_START + port;
   else
     return PWMALL;
 }
 
-uint8_t PCA9626PWM::number_of_ports() const { return n_of_ports; }
+uint8_t PCA9622PWM::number_of_ports() const { return n_of_ports; }
 
-String PCA9626PWM::type_name() const { return PCA9626PWM::class_type(); }
+String PCA9622PWM::type_name() const { return PCA9622PWM::class_type(); }
 
 // static
-boolean PCA9626PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
+boolean PCA9622PWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   return PCA962xPWM::isMyDevice(i2cAddr, i2cPort) &&
-         PCA9626PWM::_isMyDevice(i2cAddr, i2cPort);
+         PCA9622PWM::_isMyDevice(i2cAddr, i2cPort);
 }
 
 // static
-boolean PCA9626PWM::_isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
-  // PCA9626 returns 0b11100010, 100, 1000 for SUBADR1 - SUBADR3 by default
-  uint8_t subadr1 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9626PWM::SUBADR1);
-  uint8_t subadr2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9626PWM::SUBADR2);
+boolean PCA9622PWM::_isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
+  // PCA9622 returns 0b11100010, 100, 1000 for SUBADR1 - SUBADR3 by default
+  uint8_t subadr1 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9622PWM::SUBADR1);
+  uint8_t subadr2 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9622PWM::SUBADR2);
 
   return subadr1 == 0b11100010 && subadr2 == 0b11100100;
 }

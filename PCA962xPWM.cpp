@@ -71,5 +71,7 @@ boolean PCA962xPWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
   // However, experiments reveal that
   // 1) MODE1 bit 7 (auto increment) can be 0,
   // 2) MODE1 bit 4 (sleep) can be 0.
-  return (mode1 & 0b01101111) == 0b00000001 && mode2 == 0b00000101;
+  // 3) PCA9632 MODE2 bit 2 can be 0.
+  return (mode1 & 0b01101111) == 0b00000001 &&
+         (mode2 & 0b11111011) == 0b00000001;
 }

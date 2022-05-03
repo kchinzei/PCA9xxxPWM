@@ -114,11 +114,15 @@ float PCA995xAPWM::get_current(uint8_t port) {
 }
 
 void PCA995xAPWM::_current(uint8_t port, uint8_t v) {
+  if (use_current_control) return;
+
   uint8_t reg_addr = current_register_access(port);
   write(reg_addr, v);
 }
 
 void PCA995xAPWM::_current(uint8_t *vp) {
+  if (use_current_control) return;
+
   uint8_t n_of_ports = number_of_ports();
   uint8_t data[n_of_ports + 1];
 
@@ -132,8 +136,6 @@ void PCA995xAPWM::_current(uint8_t *vp) {
 
 // static
 boolean PCA995xAPWM::isMyDevice(uint8_t i2cAddr, TwoWire *i2cPort) {
-  if (i2cAddr == ADR_ALLCALL || i2cAddr == ADR_SUBADR_DEFAULT)
-    return false;
   // PCA995x devices commonly return 0b10001001 for MODE1, 0b00000*01 for MODE 2
   // by default. Bit 2 of MODE2 differs between 9955 and 9956.
   uint8_t mode1 = PCA9xxxPWM::read(i2cAddr, i2cPort, PCA9xxxPWM::MODE1);

@@ -29,9 +29,13 @@
 #include "PCA9xxxPWMFactory.h"
 #include "PCA9xxxPWM.h"
 
+#include "PCA9622PWM.h"
+#include "PCA9624PWM.h"
 #include "PCA9626PWM.h"
+#include "PCA9632PWM.h"
 #include "PCA9685PWM.h"
 #include "PCA9955APWM.h"
+#include "PCA9956APWM.h"
 
 static int8_t exists(PCA9xxxPWM** const buf, uint8_t len, uint8_t adr, const String classtype);
 
@@ -90,6 +94,22 @@ uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM** const oldbuf, uint8_t len, bo
         newbuf[iFound++] = oldbuf[old_index];
         oldbuf[old_index] = NULL;
       }
+    } else if (PCA9622PWM::isMyDevice(i, _i2cPort)) {
+      int8_t old_index = exists(oldbuf, len, i, PCA9622PWM::class_type());
+      if (old_index < 0) {
+        newbuf[iFound++] = new PCA9622PWM(i, _i2cPort);
+      } else {
+        newbuf[iFound++] = oldbuf[old_index];
+        oldbuf[old_index] = NULL;
+      }
+    } else if (PCA9624PWM::isMyDevice(i, _i2cPort)) {
+      int8_t old_index = exists(oldbuf, len, i, PCA9624PWM::class_type());
+      if (old_index < 0) {
+        newbuf[iFound++] = new PCA9624PWM(i, _i2cPort);
+      } else {
+        newbuf[iFound++] = oldbuf[old_index];
+        oldbuf[old_index] = NULL;
+      }
     } else if (PCA9626PWM::isMyDevice(i, _i2cPort)) {
       int8_t old_index = exists(oldbuf, len, i, PCA9626PWM::class_type());
       if (old_index < 0) {
@@ -98,10 +118,26 @@ uint8_t PCA9xxxPWMFactory::scanDevice(PCA9xxxPWM** const oldbuf, uint8_t len, bo
         newbuf[iFound++] = oldbuf[old_index];
         oldbuf[old_index] = NULL;
       }
+    } else if (PCA9632PWM::isMyDevice(i, _i2cPort)) {
+      int8_t old_index = exists(oldbuf, len, i, PCA9632PWM::class_type());
+      if (old_index < 0) {
+        newbuf[iFound++] = new PCA9632PWM(i, _i2cPort);
+      } else {
+        newbuf[iFound++] = oldbuf[old_index];
+        oldbuf[old_index] = NULL;
+      }
     } else if (PCA9955APWM::isMyDevice(i, _i2cPort)) {
       int8_t old_index = exists(oldbuf, len, i, PCA9955APWM::class_type());
       if (old_index < 0) {
         newbuf[iFound++] = new PCA9955APWM(i, _i2cPort);
+      } else {
+        newbuf[iFound++] = oldbuf[old_index];
+        oldbuf[old_index] = NULL;
+      }
+    } else if (PCA9956APWM::isMyDevice(i, _i2cPort)) {
+      int8_t old_index = exists(oldbuf, len, i, PCA9956APWM::class_type());
+      if (old_index < 0) {
+        newbuf[iFound++] = new PCA9956APWM(i, _i2cPort);
       } else {
         newbuf[iFound++] = oldbuf[old_index];
         oldbuf[old_index] = NULL;

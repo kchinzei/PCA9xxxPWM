@@ -180,7 +180,6 @@ protected:
     AUTO_INCREMENT = 0x80,
     ADR_RESET = 0x00,
     ADR_ALLCALL = 0x70,
-    ADR_SUBADR_DEFAULT = 0x76,
   };
 
   void _current(uint8_t port, uint8_t v);
